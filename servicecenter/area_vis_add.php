@@ -10,7 +10,7 @@ require("area_ctrl.php");
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>ServiceCenter - Nivel->A&ntilde;adir</title>
+        <title>ServiceCenter - Area->A&ntilde;adir</title>
         <?php $xajax->printJavascript(); ?>
     </head>
     <body onload="xajax_initAdd();">
@@ -31,7 +31,7 @@ require("area_ctrl.php");
                 </tr>
                 <tr>
                     <td>Coordinaci&oacute;n:</td>
-                    <td><div id="cmbCoordinacion"></div><!--<input type="text" name="txtCoordinacion" id="txtCoordinacion" size="30" class="text" />--></td>
+                    <td><div id="cmbCoordinacion"></div></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
@@ -39,7 +39,7 @@ require("area_ctrl.php");
                         <input type="button" value="Guardar" onclick="xajax_guardar(xajax.getFormValues('formulario'));return false;" />
                         <input type="reset" value="Limpiar" class="boton" />
         </form>
-                        <form id="formCancel" action="coordinacion_vis.php">
+                        <form id="formCancel" action="area_vis.php">
                             <input type="submit" value="Cancelar" name="btnCancelar" />
                         </form>
                     </td>

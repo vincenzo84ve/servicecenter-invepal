@@ -2,7 +2,6 @@
 
 require_once("xajax_core/xajaxAIO.inc.php");
 
-
 $xajax = new xajax("area_mdl.php");
 
 $xajax->register(XAJAX_FUNCTION, "guardar");
@@ -28,7 +27,7 @@ function init(){
         $lst = $area->getLista();
         if ($lst == null){
             $lst = "<tr><td><b>Id</b></td><td><b>Nombre</b></td><td><b>Ubicaci&oacute;n</b></td><td><b>Coordinaci&oacute;n</b></td></tr></table><p>";
-            $lst .= "No hay Areaes registradas a&uacute;n!";
+            $lst .= "No hay &Aacute;reas registradas a&uacute;n!";
             $objResp->assign("listadoAreas", "innerHTML", $lst);
         }else{
              $objResp->assign("listadoAreas", "innerHTML", $lst);
@@ -38,17 +37,17 @@ function init(){
     return $objResp;
 }
 
-//Funcion para guardar los datos del ingeniero
+// Funcion para guardar los datos del ingeniero
 function guardar($datos){
     $objResp = new xajaxResponse();
 
-    if ($datos["txtNombre"]==""){
-        $objResp->alert("Coordinación sin nombre!\nPor favor revise e intente de nuevo.");
+    if (($datos["txtNombre"]=="")||($datos["txtUbicacion"]=="")){
+        $objResp->alert("Coordinación sin nombre o ubicación!\nPor favor revise e intente de nuevo.");
         return $objResp;
     }else{
-        $coord = new Area($datos["txtId"], $datos["txtNombre"], $datos["txtUbicacion"]);
+        $area = new Area($datos["txtId"], $datos["txtNombre"], $datos["txtUbicacion"], $datos["cmbCoordinaciones"]);
 
-        $r = $coord->guardar();
+        $r = $area->guardar();
 
         if ($r == -1){
             $objResp->alert("Error en la conexión!");
@@ -58,7 +57,7 @@ function guardar($datos){
             $objResp->alert("Guardado con éxito!");
         }
 
-        $objResp->redirect("Area_vis.php");
+        $objResp->redirect("area_vis.php");
 
         return $objResp;
     }
@@ -67,7 +66,7 @@ function guardar($datos){
 function initEdit($arg){
     $objResp = new xajaxResponse();
 
-    $coord = new Area($arg);
+    $area = new Area($arg);
 
     $r = $coord->buscar();
 
@@ -79,9 +78,9 @@ function initEdit($arg){
        $textBox = "<input type=\"text\" name=\"txtId\" id=\"txtId\"  size=\"6\" readonly=\"readonly\" />";
 
         $objResp->assign("id", "innerHTML", $textBox);
-        $objResp->assign("txtId", "value", $coord->getId());
-        $objResp->assign("txtNombre", "value", $coord->getNombre());
-        $objResp->assign("txtUbicacion", "value", $coord->getUbicacion());
+        $objResp->assign("txtId", "value", $area->getId());
+        $objResp->assign("txtNombre", "value", $area->getNombre());
+        $objResp->assign("txtUbicacion", "value", $area->getUbicacion());
     }
 
     return $objResp;
@@ -124,30 +123,31 @@ function initAdd(){
 
     $area = new Area();
 
-    $coord = new Coordinacion();
-
     $r = $area->idArea();
 
     if ($r == -1){// Error en la conexión
-        $objResp->alert("Error en la conexion!");
+        $objResp->alert("Error en la conexion!\nImposible generar id de &aacute;rea.");
     }else if ($r == 0){// Error en la consulta
-        $objResp->alert("Error en la consulta!\nImposible generar id de nivel.");
+        $objResp->alert("Error en la consulta!\nImposible generar id de &aacute;rea.");
     }else{// si realizo la consulta con éxito
         // inicializo la vista para añadir nuevas areas
         $textBox = "<input type=\"text\" name=\"txtId\" id=\"txtId\"  size=\"6\" readonly=\"readonly\" />";
 
-        $coord->listar();
-        $esquema = "<select name=\"cmbCooordinacion\" id=\"cmbCoordinacion\">";
-        while ($row=mysql_fetch_array($result)){
-            $esquema .= "<option value=".$row['cod_carrera'].">".$row['nombre']."</option>";
-        }
-
         $objResp->assign("id", "innerHTML", $textBox);
-        $objResp->assign("txtId", "value", $coord->getId());
-        $objResp->clear("txtNombre", "value");
-        $objResp->clear("txtUbicacion", "value");
-    }
+        $objResp->assign("txtId", "value", $area->getId());
 
+        $area->cmbCoordinaciones();
+
+        if ($r == -1){
+            $objResp->alert("Error en la conexión\nImposible generar lista de coordinaciones");
+            $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
+        }else if ($r == 0){
+            $objResp->alert("Error en la consulta\nImposible generar lista de coordinaciones");
+            $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
+        }else{
+            $objResp->assign("cmbCoordinacion", "innerHTML", $area->getEsquemaCoordinaciones());
+        }
+    }
     return $objResp;
 }
 

@@ -20,13 +20,15 @@ class Area {
     var $ubicacion;
     var $id_coord;
     var $html_lst;
+    var $esquema;
 
-    function __construct($id=1, $nombre=null, $ubicacion=null, $id_coord=null, $lst=null) {
+    function __construct($id=1, $nombre=null, $ubicacion=null, $id_coord=null, $lst=null, $cmb=null) {
         $this->id = $id;
         $this->nombre = $nombre;
         $this->ubicacion = $ubicacion;
         $this->id_coord = $id_coord;
         $this->html_lst = $lst;
+        $this->esquema = $cmb;
     }
 
     function __destruct(){
@@ -62,7 +64,7 @@ class Area {
     }
 
     function getLista(){
-        return ($this->html_lst);
+        return $this->html_lst;
     }
 
     public function getId_coord() {
@@ -73,10 +75,8 @@ class Area {
         $this->id_coord = $id_coord;
     }
 
-    
-
     function guardar(){
-        $consulta = "INSERT INTO area (id, nombre, ubicacion, id_coordinacion) VALUES ('".$this->id."', '".$this->nombre."', '".$this->ubicacion."', '".$this->id_coord."')";
+        $consulta = "INSERT INTO areas (id, nombre, ubicacion, id_coordinacion) VALUES ('".$this->id."', '".$this->nombre."', '".$this->ubicacion."', '".$this->id_coord."')";
 
         $conec = new Conexion();
 
@@ -98,7 +98,7 @@ class Area {
     }
 
     function idArea(){// Incrementar el nivel del id generado
-        $consulta = "SELECT id FROM area ORDER BY id DESC LIMIT 1";
+        $consulta = "SELECT id FROM areas ORDER BY id DESC LIMIT 1";
 
         $conec = new Conexion();
 
@@ -148,7 +148,10 @@ class Area {
                 $ls .= "<tr><td><b>Id</b></td><td><b>Nombre</b></td><td><b>Ubicaci&oacute;n</b></td><td><b>Coordinaci&oacute;n</b></td></tr>";
                 while($i < $num){
                     $arr = pg_fetch_row ($resultado, $i);
-                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arr[3]."</td><td><a href=\"area_vis_edit.php?id=".$arr[0]."\">Editar</a></tr>";
+                    $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arr[3]."'";
+                    $res = pg_query($consulta);
+                    $arrc = pg_fetch_row ($res, 0);
+                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrc[0]."</td><td><a href=\"area_vis_edit.php?id=".$arrc[0]."\">Editar</a></tr>";
                     $i++;
                 }
                 $ls .= "</table>";
@@ -204,5 +207,43 @@ class Area {
         }
     }
 
+    public function setEsquemaCoordinaciones($arg){
+        $this->esquema = $arg;
+    }
+
+    public function getEsquemaCoordinaciones(){
+        return $this->esquema;
+    }
+
+    public function cmbCoordinaciones(){
+        $consulta = "SELECT * FROM coordinacion ORDER BY id ASC";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Falló la conexión
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Falló la consulta
+        }
+
+        $this->esquema = "<select name=\"cmbCoordinaciones\" id=\"cmbCoordinaciones\">";
+        $i = 0;
+        while ($i < pg_numrows($resultado)){
+            $arr = pg_fetch_row($resultado, $i);
+            $this->esquema .= "<option value=".$arr[0].">".$arr[1]."</option>";
+            $i++;
+        }
+
+        $this->esquema .= "</select>";
+        pg_FreeResult($resultado);
+        $conec->cerrarConexion();
+        return 1;
+    }
 }
 ?>
