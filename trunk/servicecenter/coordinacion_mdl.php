@@ -19,15 +19,17 @@ class Coordinacion {
     var $nombre;
     var $ubicacion;
     var $html_lst;
+    var $esquema;
 
-    function __construct($id=1, $nombre=null, $ubicacion=null, $lst=null) {
+    public function __construct($id=1, $nombre=null, $ubicacion=null, $lst=null, $esquema=null) {
         $this->id = $id;
         $this->nombre = $nombre;
         $this->ubicacion = $ubicacion;
         $this->html_lst = $lst;
+        $this->esquema = $esquema;
     }
 
-    function __destruct(){
+    public function __destruct(){
         // Liberar el objeto de la memoria
     }
 
@@ -59,11 +61,11 @@ class Coordinacion {
         $this->html_lst = $html_lst;
     }
 
-    function getLista(){
-        return ($this->html_lst);
+    public function getLista(){
+        return $this->html_lst;
     }
 
-    function guardar(){
+    public function guardar(){
         $consulta = "INSERT INTO coordinacion (id, nombre, ubicacion) VALUES ('".$this->id."', '".$this->nombre."', '".$this->ubicacion."')";
 
         $conec = new Conexion();
@@ -85,7 +87,7 @@ class Coordinacion {
         }
     }
 
-    function idCoord(){// Incrementar el nivel del id generado
+    public function idCoord(){// Incrementar el nivel del id generado
         $consulta = "SELECT id FROM coordinacion ORDER BY id DESC LIMIT 1";
 
         $conec = new Conexion();
@@ -113,7 +115,7 @@ class Coordinacion {
         }
     }
 
-    function listar(){
+    public function listar(){
         $consulta = "SELECT * FROM coordinacion ORDER BY id ASC";
 
         $conec = new Conexion();
@@ -149,7 +151,7 @@ class Coordinacion {
         }
     }
 
-    function buscar(){
+    public function buscar(){
         $consulta = "SELECT * FROM coordinacion WHERE id='".$this->id."'";
 
         $conec = new Conexion();
@@ -172,7 +174,7 @@ class Coordinacion {
         }
     }
 
-    function modificar(){
+    public function modificar(){
         $consulta = "UPDATE coordinacion SET nombre='".$this->nombre."', ubicacion='".$this->ubicacion."' WHERE id='".$this->id."'";
 
         $conec = new Conexion();
