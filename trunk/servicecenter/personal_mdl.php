@@ -173,19 +173,19 @@ class Personal{
             if ($num > 0){
                 $i = 0;
                 $ls = "<table>";
-                $ls .= "<tr><td><b>Id</b></td><td><b>Nombre</b></td><td><b>Apellido</b></td><td><b>Nivel</b></td><td><b>&Aacute;rea</b></td></tr>";
+                $ls .= "<tr><td><b>Cedula</b></td><td><b>Nombre</b></td><td><b>Apellido</b></td><td><b>Nivel</b></td><td><b>&Aacute;rea</b></td><td><b>Coordinaci&oacute;n</b></td></tr>";
                 while($i < $num){
                     $arr = pg_fetch_row ($resultado, $i);
-                    $consulta = "SELECT nombre FROM nivel WHERE id='".$arr[5]."'";
+                    $consulta = "SELECT descripcion FROM nivel WHERE id='".$arr[5]."'";
                     $resn = pg_query($consulta);
                     $arrn= pg_fetch_row ($resn, 0);
                     $consulta = "SELECT nombre, id_coordinacion FROM areas WHERE id='".$arr[6]."'";
                     $resa = pg_query($consulta);
                     $arra = pg_fetch_row ($resa, 0);
-                    $consulta = "SELECT nombre FROM areas WHERE id='".$arra[1]."'";
+                    $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arra[1]."'";
                     $resc = pg_query($consulta);
                     $arrc = pg_fetch_row ($resc, 0);
-                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrn[0]."</td><td>".$arra[0]."</td><td>".$arrn[0]."</td><td><a href=\"area_vis_edit.php?id=".$arr[0]."&idC=".$arr[3]."\">Editar</a></tr>";
+                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrn[0]."</td><td>".$arra[0]."</td><td>".$arrc[0]."</td><td><a href=\"area_vis_edit.php?id=".$arr[0]."&idA=".$arr[6]."\">Editar</a></tr>";
                     $i++;
                 }
                 $ls .= "</table>";

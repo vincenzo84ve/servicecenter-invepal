@@ -66,12 +66,12 @@ function guardar($datos){
     return $objResp;
 }
 
-function initEdit($id, $idc){
+function initEdit($id, $ida){
     $objResp = new xajaxResponse();
 
     $pers = new Personal($id);
 
-    $r = $area->buscar();
+    $r = $pers->buscar();
 
     if ($r == -1){
         $objResp->alert("Error en la conexión!");
@@ -85,7 +85,7 @@ function initEdit($id, $idc){
         $objResp->assign("txtNombre", "value", $pers->getNombre());
         $objResp->assign("txtUbicacion", "value", $pers->getUbicacion());
 
-        $area->cmbCoordinaciones();
+        $pers->cmbAreas();
 
         if ($r == -1){
             $objResp->alert("Error en la conexión\nImposible generar lista de coordinaciones");
