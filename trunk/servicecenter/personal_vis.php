@@ -10,66 +10,32 @@ require("personal_ctrl.php");
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title></title>
+        <title>ServiceCenter - Coordinaciones</title>
         <?php $xajax->printJavascript(); ?>
     </head>
-    <body onload="xajax_init_personal();">
+    <body onload="xajax_init();">
         <div id="mensaje"></div>
-        <form id="formulario">
+        <div id="listadoPersonal">
             <table class="tabla">
                 <tr>
-                    <td>Cedula:</td>
-                    <td><div id="ci"><input type="text" name="txtCedula" id="txtCedula" class="text"></div></td>
-                </tr>
-                <tr>
-                    <td>Nombre:</td>
-                    <td><input type="text" name="txtNombre" id="txtNombre" class="text"></td>
-                </tr>
-                <tr>
-                    <td>Apellido:</td>
-                    <td><input type="text" name="txtApellido" id="txtApellido" class="text"></td>
-                </tr>
-                <tr>
-                    <td>e-mail:</td>
-                    <td><input type="text" name="txtMail" id="txtMail" class="text"></td>
-                </tr>
-                <tr>
-                    <td>Tel&eacute;fono:</td>
-                    <td><input type="text" name="txtTelf" id="txtTelf" class="text"></td>
-                </tr>
-                <tr>
-                    <td>Nivel:</td>
-                    <td><input type="text" name="txtLogin" id="txtLogin" class="text"></td>
-                </tr>
-                <tr>
-                    <td>&Aacute;rea:</td>
-                    <td><input type="text" name="txtLogin" id="txtLogin" class="text"></td>
-                </tr>
-                <tr>
-                    <td>Clave:</td>
-                    <td><input type="password" name="txtClave1" id="txtClave1" class="text"></td>
-                </tr>
-                <tr>
-                    <td>Confirmar:</td>
-                        <td><input type="password" name="txtClave2" id="txtClave2" class="text"></td>
-                </tr>
-                <tr>
-                    <td><div id="lblEstado"></div></td>
-                    <td><div id="estado"></div></td>
-                </tr>
-        <!--</table>
-        <table>-->
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                        <div id="panel">
-                            <input type="button" value="Guardar" onclick="xajax_guardar(xajax.getFormValues('formulario'));return false;" />
-                            <input type="button" value="Buscar" onclick="xajax_buscar(document.getElementById('txtCedula').value);" />
-                            <input type="reset" value="Limpiar" class="boton" />
-                        </div>
-                    </td>
+                    <td><b>ID</b></td>
+                    <td><b>Nombre</b></td>
+                    <td><b>Apellido</b></td>
+                    <td><b>Nivel</b></td>
+                    <td><b>&Aacute;rea</b></td>
+                    <td><b>Coordinaci&oacute;n</b></td>
                 </tr>
             </table>
-        </form>
+        </div>
+        <table>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <form id="form1" action="personal_vis_add.php">
+                        <input type="submit" value="A&ntilde;adir" name="btnAdd" />
+                    </form>
+                </td>
+            </tr>
+        </table>
     </body>
 </html>
