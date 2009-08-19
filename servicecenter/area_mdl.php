@@ -151,7 +151,7 @@ class Area {
                     $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arr[3]."'";
                     $res = pg_query($consulta);
                     $arrc = pg_fetch_row ($res, 0);
-                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrc[0]."</td><td><a href=\"area_vis_edit.php?id=".$arrc[0]."\">Editar</a></tr>";
+                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrc[0]."</td><td><a href=\"area_vis_edit.php?id=".$arr[0]."&idC=".$arr[3]."\">Editar</a></tr>";
                     $i++;
                 }
                 $ls .= "</table>";
@@ -165,7 +165,7 @@ class Area {
     }
 
     function buscar(){
-        $consulta = "SELECT * FROM area WHERE id='".$this->id."'";
+        $consulta = "SELECT * FROM areas WHERE id='".$this->id."'";
 
         $conec = new Conexion();
 
@@ -183,12 +183,13 @@ class Area {
             $arr = pg_fetch_row ($resultado, 0);
             $this->nombre = $arr[1];
             $this->ubicacion = $arr[2];
+            $this->id_coord = $arr[3];
             return 1;// Consulta exitosa
         }
     }
 
     function modificar(){
-        $consulta = "UPDATE area SET nombre='".$this->nombre."', ubicacion='".$this->ubicacion."' WHERE id='".$this->id."'";
+        $consulta = "UPDATE areas SET nombre='".$this->nombre."', ubicacion='".$this->ubicacion."', id_coordinacion='".$this->id_coord."' WHERE id='".$this->id."'";
 
         $conec = new Conexion();
 

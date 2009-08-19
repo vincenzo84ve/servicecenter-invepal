@@ -1,124 +1,378 @@
 <?php
-require("personal_class.php");
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 
-//Funcion para guardar los datos del ingeniero
-function guardar($datos){
-    $objResp = new xajaxResponse();
+/*sección de include*/
+require('conexion.php');
+require_once("personal_ctrl.php");
 
-    if ($datos["txtClave1"]<>$datos["txtClave2"]){
-        $objResp->alert("Claves no coinciden!\nPor favor revise e intente de nuevo.");
-        return $objResp;
-    }else{
-        $personal = new Personal($datos["txtCedula"], $datos["txtNombre"], $datos["txtApellido"], $datos["txtMail"], $datos["txtTelf"], $datos["txtLogin"], $datos["txtClave1"]);
+/**
+ * Description of ingeniero_mdl
+ *
+ * @author vincenzo
+ */
+class Personal{
+    //atributos del objeto personal
+    var $cedula;
+    var $nombre;
+    var $apellido;
+    var $email;
+    var $telf;
+    var $id_nivel;
+    var $id_area;
+    var $passw;
+    var $estado;
+    var $html_lst;
+    var $esquemaC;
+    var $esquemaN;
+    var $esquemaA;
 
-        $r = $ing->guardar();
-
-        $objResp->alert($r);
-
-        $objResp->call("xajax_limpiar");
-
-        return $objResp;
-    }
-}
-
-//funcion para limpiar los campos del formulario
-function limpiar(){
-    $objResp = new xajaxResponse();
-
-    // Limpiar cada uno de los campos del formulario
-    $objResp->assign("txtCedula", "value", "");
-    $objResp->assign("txtNombre", "value", "");
-    $objResp->assign("txtApellido", "value", "");
-    $objResp->assign("txtLogin", "value", "");
-    $objResp->assign("txtClave1", "value", "");
-    $objResp->assign("txtClave2", "value", "");
-    $objResp->assign("txtMail", "value", "");
-    $objResp->assign("txtTelf", "value", "");
-    $objResp->assign("lblEstado", "innerHTML", "");
-    $objResp->assign("estado", "innerHTML", "");
-
-    // Restablecer el panel de opciones si es necesario
-    $panel = "<input type=\"button\" value=\"Guardar\" onclick=\"xajax_guardar(xajax.getFormValues('formulario'));return false;\" class=\"boton\" />";
-    $panel .= " <input type=\"button\" value=\"Buscar\" onclick=\"xajax_buscar(document.getElementById('txtCedula').value);\" class=\"boton\" />";
-    $panel .= " <input type=\"reset\" value=\"Limpiar\" class=\"boton\" />";
-
-    $objResp->assign("panel", "innerHTML", $panel);
-
-    return $objResp;
-
-}
-
-//funcion para realizar busquedas en la bd de scdat sobre los datos del ingeniero
-function buscar($arg){
-    $objResp = new xajaxResponse();
-
-    if ($arg==""){
-        $objResp->alert("Debe especificar el número de cedula!");
-        return $objResp;
+    public function __construct($ced=null, $nom=null, $ape=null, $mail=null, $tel=null, $niv=4, $are=null, $pas=null, $est="activo", $lst=null, $esqc=null, $esqn=null, $esqa=null){
+        $this->cedula = $ced;
+        $this->nombre = $nom;
+        $this->apellido = $ape;
+        $this->email = $mail;
+        $this->telf = $tel;
+        $this->id_nivel = $niv;
+        $this->id_area = $are;
+        $this->passw = $pas;
+        $this->estado = $est;
+        $this->html_lst = $lst;
+        $this->esquemaC = $esqc;
+        $this->esquemaN = $esqn;
+        $this->esquemaA = $esqa;
     }
 
-    $personal = new Personal($arg);
-
-    $r = $personal->buscar();
-
-    if ($r==null){
-        //Deshabilitar el campo cedula para que no pueda ser modificado
-        $textBox = "<input type=\"text\" name=\"txtCedula\" id=\"txtCedula\" readonly=\"readonly\" />";
-
-        // Mostrar el registro
-        $objResp->assign("txtNombre", "value", $personal->getNombre());
-        $objResp->assign("txtApellido", "value", $personal->getApaellido());
-        $objResp->assign("txtArea", "value", $personal->getArea());
-        $objResp->assign("txtMail", "value", $personal->getEmail());
-        $objResp->assign("txtTelf", "value", $personal->getTelefono());
-        $objResp->assign("ci", "innerHTML", $textBox);
-        $objResp->assign("txtCedula", "value", $personal->getCedula());
-
-        // Reconfigurar las opciones de la vista
-        $esquema = "<td><select name=\"cmbEstado\" id=\"cmbEstado\">";
-        $esquema .= "<option value=\"activo\">Activo</option>";
-        $esquema .= "<option value=\"inactivo\">Inactivo</option>";
-        $esquema .= "</select>";
-        $panel = "<input type=\"button\" value=\"Actualizar\" onclick=\"xajax_validar_modificar(xajax.getFormValues('formulario'));return false;\" class=\"boton\" />";
-        $panel .= " <input type=\"button\" value=\"Cancelar\" onclick=\"xajax_limpiar();\" class=\"boton\" />";
-
-        $objResp->assign("lblEstado", "innerHTML", "Estado:");
-        $objResp->assign("estado", "innerHTML", $esquema);
-        $objResp->assign("panel", "innerHTML", $panel);
-    }else{
-        $objResp->alert($r);
-    }
-    return $objResp;
-}
-
-function validar_modificar($datos){
-    $objResp = new xajaxResponse();
-    
-    if (($datos['txtNombre']=="") || ($datos['txtApellido']=="")){
-        $objResp->alert("Algun(os) campo(s) esta(n) vacio(s).\nDebe llenar todos los campos!");
-    }else{
-        $objResp->confirmCommands(1, "Esta Seguro?");
-        $objResp->call("xajax_modificar", $datos);
+    public function __desctruct(){
+        // Se libera el espacio en memoria ocupado por el objeto personal
     }
 
-    return $objResp;
+    public function setCedula($arg){
+        $this->cedula = $arg;
+    }
+
+    public function setNombre($arg){
+        $this->nombre = $arg;
+    }
+
+    public function setApellido($arg){
+        $this->apellido = $arg;
+    }
+
+    public function setEmail($arg){
+        $this->email = $arg;
+    }
+
+    public function satTelefono($ar){
+        $this->telf = $arg;
+    }
+
+    public function setNivel($arg){
+        $this->id_nivel = $arg;
+    }
+
+    public function setArea($arg){
+        $this->id_area = $arg;
+    }
+
+    public function setPassword($arg){
+        $this->passw;
+    }
+
+    public function setEstado($arg){
+        $this->estado = $arg;
+    }
+
+    public function getCedula(){
+        return ($this->cedula);
+    }
+
+    public function getNombre(){
+        return ($this->nombre);
+    }
+
+    public function getApellido(){
+        return ($this->apellido);
+    }
+
+    public function getEmail(){
+        return ($this->email);
+    }
+
+    public function getTelefono(){
+        return ($this->telf);
+    }
+
+    public function getNivel(){
+        return ($this->id_nivel);
+    }
+
+    public function getArea(){
+        return ($this->id_area);
+    }
+
+    public function getPassw(){
+        return ($this->passw);
+    }
+
+    public function getEstado(){
+        return ($this->estado);
+    }
+
+    public function setLista($arg){
+        $this->html_lst = $arg;
+    }
+
+    public function getLista(){
+        return $this->html_lst;
+    }
+
+    public function guardar(){
+        $password = md5($this->passw);
+
+        $consulta = "INSERT INTO personal (id, nombre, apellido, correo, telefono, id_nivel, id_area, password, estado) VALUES ('".$this->cedula."', '".$this->nombre."', '".$this->apellido."', '".$this->email."', '".$this->telf."', '".$this->id_nivel."', '".$this->id_area."', '".$password."', '".$this->estado."')";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1; // Falló la conexión
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado) {
+            return 0; // Falló la consulta
+        }else{
+            pg_FreeResult($resultado);
+            $conec->cerrarConexion();
+            return 1; // Ejecutado con éxito
+        }
+    }
+
+    public function listar(){
+        $consulta = "SELECT * FROM personal ORDER BY id ASC";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1; // Fallo la conexion
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Fallo la consulta
+        }else{
+            $num = pg_numrows($resultado);
+            if ($num > 0){
+                $i = 0;
+                $ls = "<table>";
+                $ls .= "<tr><td><b>Id</b></td><td><b>Nombre</b></td><td><b>Apellido</b></td><td><b>Nivel</b></td><td><b>&Aacute;rea</b></td></tr>";
+                while($i < $num){
+                    $arr = pg_fetch_row ($resultado, $i);
+                    $consulta = "SELECT nombre FROM nivel WHERE id='".$arr[5]."'";
+                    $resn = pg_query($consulta);
+                    $arrn= pg_fetch_row ($resn, 0);
+                    $consulta = "SELECT nombre, id_coordinacion FROM areas WHERE id='".$arr[6]."'";
+                    $resa = pg_query($consulta);
+                    $arra = pg_fetch_row ($resa, 0);
+                    $consulta = "SELECT nombre FROM areas WHERE id='".$arra[1]."'";
+                    $resc = pg_query($consulta);
+                    $arrc = pg_fetch_row ($resc, 0);
+                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrn[0]."</td><td>".$arra[0]."</td><td>".$arrn[0]."</td><td><a href=\"area_vis_edit.php?id=".$arr[0]."&idC=".$arr[3]."\">Editar</a></tr>";
+                    $i++;
+                }
+                $ls .= "</table>";
+                $this->html_lst = $ls;
+                unset($ls);
+                pg_FreeResult($resultado);
+                $conec->cerrarConexion();
+            }
+            return 1;// Se ejecuto satisfactoriamente
+        }
+    }
+
+    public function buscar(){
+        $consulta = "SELECT * FROM ingenieros WHERE cedula='".$this->cedula."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return "Error en la conexion!";
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return "Error en la consulta!";
+        }else{
+            if (pg_numrows($resultado)>0){
+                $arr = pg_fetch_row ($resultado, 0);
+                $this->nombre = $arr[1];
+                $this->apellido = $arr[2];
+                $this->email = $arr[3];
+                $this->telf = $arr[4];
+                $this->login = $arr[5];
+                $this->estado = $arr[8];
+                pg_FreeResult($resultado);
+                $conec->cerrarConexion();
+                return null;
+            }else{
+                pg_FreeResult($resultado);
+                $conec->cerrarConexion();
+                return "El número de cedula ".$this->cedula.", no esta registrado.\nVerifique e intente de nuevo.";
+            }
+        }
+    }
+
+    // Actualizar los datos en la tabla ingenieros
+    public function modificar(){
+        $consulta = "UPDATE ingenieros SET nombre='".$this->nombre."', apellido='".$this->apellido."', correo='".$this->email."', telefono='".$this->telf."', estado='".$this->estado."' WHERE cedula='".$this->cedula."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return "<b>Error en la conexión!</b>";
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            pg_FreeResult($resultado);
+            //$conec->cerrarConexion();
+            return "Error en la consulta!\n".pg_errormessage($conec->obtenerConexion());
+        }else{
+            pg_FreeResult($resultado);
+            $conec->cerrarConexion();
+            return "Actualizado con éxito!";
+        }
+    }
+
+    public function setesquemaCoordinaciones($arg){
+        $this->esquemaC = $arg;
+    }
+
+    public function getesquemaCoordinaciones(){
+        return $this->esquemaC;
+    }
+
+    public function setesquemaNiveles($arg){
+        $this->esquemaN = $arg;
+    }
+
+    public function getesquemaNiveles(){
+        return $this->esquemaN;
+    }
+
+    public function setesquemaAreas($arg){
+        $this->esquemaA = $arg;
+    }
+
+    public function getesquemaAreas(){
+        return $this->esquemaA;
+    }
+
+    public function cmbCoordinaciones(){
+        $consulta = "SELECT * FROM coordinacion ORDER BY id ASC";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Falló la conexión
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Falló la consulta
+        }
+
+        $this->esquemaC = "<select name=\"cmbCoordinaciones\" id=\"cmbCoordinaciones\" onclick=\"xajax_lsAreas(document.getElementById('cmbCoordinaciones').value);\" >";
+        $i = 0;
+        while ($i < pg_numrows($resultado)){
+            $arr = pg_fetch_row($resultado, $i);
+            $this->esquemaC .= "<option value=".$arr[0].">".$arr[1]."</option>";
+            $i++;
+        }
+
+        $this->esquemaC .= "</select>";
+        pg_FreeResult($resultado);
+        $conec->cerrarConexion();
+        return 1;
+    }
+
+    public function cmbNiveles(){
+        $consulta = "SELECT * FROM nivel ORDER BY id ASC";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Falló la conexión
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Falló la consulta
+        }
+
+        $this->esquemaN = "<select name=\"cmbNivel\" id=\"cmbNivel\">";
+        $i = 0;
+        while ($i < pg_numrows($resultado)){
+            $arr = pg_fetch_row($resultado, $i);
+            $this->esquemaN .= "<option value=".$arr[0].">".$arr[1]."</option>";
+            $i++;
+        }
+
+        $this->esquemaN .= "</select>";
+        pg_FreeResult($resultado);
+        $conec->cerrarConexion();
+        return 1;
+    }
+
+    public function cmbAreas($arg){
+        $consulta = "SELECT * FROM areas WHERE id_coordinacion='".$arg."' ORDER BY id ASC";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Falló la conexión
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Falló la consulta
+        }
+
+        $this->esquemaA = "<select name=\"cmbAreas\" id=\"cmbAreas\">";
+        $i = 0;
+        while ($i < pg_numrows($resultado)){
+            $arr = pg_fetch_row($resultado, $i);
+            $this->esquemaA .= "<option value=".$arr[0].">".$arr[1]."</option>";
+            $i++;
+        }
+
+        $this->esquemaA .= "</select>";
+        pg_FreeResult($resultado);
+        $conec->cerrarConexion();
+        return 1;
+    }
 }
-
-function modificar($datos){
-    $objResp = new xajaxResponse();
-
-    $ing = new ingeniero_mdl($datos["txtCedula"], $datos["txtNombre"], $datos["txtApellido"], $datos["txtMail"], $datos["txtTelf"], $datos["txtLogin"], $datos["txtClave1"], $datos["cmbEstado"]);
-
-    $r = $ing->modificar();
-
-    $objResp->alert($r);
-
-    $objResp->call("xajax_limpiar");
-
-    return $objResp;
-}
-
-require("personal_ctrl.php");
-$xajax->processRequest();
-
 ?>

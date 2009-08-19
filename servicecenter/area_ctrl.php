@@ -63,24 +63,37 @@ function guardar($datos){
     }
 }
 
-function initEdit($arg){
+function initEdit($id, $idc){
     $objResp = new xajaxResponse();
 
-    $area = new Area($arg);
+    $area = new Area($id);
 
-    $r = $coord->buscar();
+    $r = $area->buscar();
 
     if ($r == -1){
         $objResp->alert("Error en la conexión!");
     }else if($r == 0){
         $objResp->alert("Error en la consulta!");
     }else{
-       $textBox = "<input type=\"text\" name=\"txtId\" id=\"txtId\"  size=\"6\" readonly=\"readonly\" />";
+        $textBox = "<input type=\"text\" name=\"txtId\" id=\"txtId\"  size=\"6\" readonly=\"readonly\" />";
 
         $objResp->assign("id", "innerHTML", $textBox);
         $objResp->assign("txtId", "value", $area->getId());
         $objResp->assign("txtNombre", "value", $area->getNombre());
         $objResp->assign("txtUbicacion", "value", $area->getUbicacion());
+
+        $area->cmbCoordinaciones();
+
+        if ($r == -1){
+            $objResp->alert("Error en la conexión\nImposible generar lista de coordinaciones");
+            $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
+        }else if ($r == 0){
+            $objResp->alert("Error en la consulta\nImposible generar lista de coordinaciones");
+            $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
+        }else{
+            $objResp->assign("cmbCoordinacion", "innerHTML", $area->getEsquemaCoordinaciones());
+            $objResp->assign("cmbCoordinaciones", "value", $idc);
+        }
     }
 
     return $objResp;
@@ -89,8 +102,8 @@ function initEdit($arg){
 function validar_modificar($datos){
     $objResp = new xajaxResponse();
 
-    if ($datos['txtNombre']==""){
-        $objResp->alert("Coordinación sin nombre!\nPor favor revise e intente de nuevo.");
+    if (($datos['txtNombre']=="")||($datos['txtUbicacion'])==""){
+        $objResp->alert("Coordinación sin nombre o ubicación!\nPor favor revise e intente de nuevo.");
     }else{
         $objResp->confirmCommands(1, "Esta Seguro?");
         $objResp->call("xajax_modificar", $datos);
@@ -102,9 +115,9 @@ function validar_modificar($datos){
 function modificar($datos){
     $objResp = new xajaxResponse();
 
-    $coord = new Area($datos["txtId"], $datos["txtNombre"], $datos["txtUbicacion"]);
+    $area = new Area($datos["txtId"], $datos["txtNombre"], $datos["txtUbicacion"], $datos["cmbCoordinaciones"]);
 
-    $r = $coord->modificar();
+    $r = $area->modificar();
 
     if ($r == -1){
         $objResp->alert("Error en la conexión!");
@@ -112,7 +125,7 @@ function modificar($datos){
         $objResp->alert("Error en la consulta!");
     }else{
         $objResp->alert("Actulizado con éxito!");
-        $objResp->redirect("Area_vis.php");
+        $objResp->redirect("area_vis.php");
     }
 
     return $objResp;
