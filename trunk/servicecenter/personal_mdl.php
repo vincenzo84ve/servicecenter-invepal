@@ -237,26 +237,24 @@ class Personal{
 
     // Actualizar los datos en la tabla ingenieros
     public function modificar(){
-        $consulta = "UPDATE ingenieros SET nombre='".$this->nombre."', apellido='".$this->apellido."', correo='".$this->email."', telefono='".$this->telf."', estado='".$this->estado."' WHERE cedula='".$this->cedula."'";
+        $consulta = "UPDATE personal SET nombre='".$this->nombre."', apellido='".$this->apellido."', correo='".$this->email."', telefono='".$this->telf."', id_nivel='".$this->id_nivel."', id_area='".$this->id_area."', estado='".$this->estado."' WHERE id='".$this->cedula."'";
 
         $conec = new Conexion();
 
         $conec->conectar();
 
         if (!$conec->obtenerConexion()){
-            return "<b>Error en la conexión!</b>";
+            return -1;// Error en la conexión
         }
 
         $resultado = pg_query($consulta);
 
         if (!$resultado){
-            pg_FreeResult($resultado);
-            //$conec->cerrarConexion();
-            return "Error en la consulta!\n".pg_errormessage($conec->obtenerConexion());
+            return 0;// Error en la consulta
         }else{
             pg_FreeResult($resultado);
             $conec->cerrarConexion();
-            return "Actualizado con éxito!";
+            return 1;// Actualizado con éxito
         }
     }
 
@@ -377,6 +375,7 @@ class Personal{
         return 1;
     }
 
+    // Determinar que áreas pertenecen a una determinada coordinación
     public function ubicarCoordinacion($arg){
         $consulta = "SELECT * FROM areas WHERE id='".$arg."'";
 

@@ -43,7 +43,7 @@ function init(){
 function guardar($datos){
     $objResp = new xajaxResponse();
     
-    if (($datos["txtCedula"]=="")||($datos["txtNombre"]=="")||($datos["txtApellido"]=="")||($datos["txtMail"]=="")||($datos["txtTelf"]=="")||($datos["txtClave1"]=="")){
+    if (($datos["txtId"]=="")||($datos["txtNombre"]=="")||($datos["txtApellido"]=="")||($datos["txtMail"]=="")||($datos["txtTelf"]=="")||($datos["txtClave1"]=="")){
         $objResp->alert("Existen campos vacios!\nPor favor revise e intente de nuevo.");
         return $objResp;
     }else{
@@ -90,8 +90,7 @@ function initEdit($id, $idn, $ida){
             $objResp->assign("txtApellido", "value", $pers->getApellido());
             $objResp->assign("txtMail", "value", $pers->getEmail());
             $objResp->assign("txtTelf", "value", $pers->getTelefono());
-            $objResp->assign("lblEstado", "innerHTML", "Estado");
-            $objResp->assign("estado", "innerHTML", "Activo");
+            $objResp->assign("cmbEstado", "value", $pers->getEstado());
 
             $r = $pers->cmbNiveles();
 
@@ -153,8 +152,8 @@ function initEdit($id, $idn, $ida){
 function validar_modificar($datos){
     $objResp = new xajaxResponse();
 
-    if (($datos['txtNombre']=="")||($datos['txtUbicacion'])==""){
-        $objResp->alert("Coordinación sin nombre o ubicación!\nPor favor revise e intente de nuevo.");
+    if (($datos["txtId"]=="")||($datos["txtNombre"]=="")||($datos["txtApellido"]=="")||($datos["txtMail"]=="")||($datos["txtTelf"]=="")){
+        $objResp->alert("Existen campos vacios!\nPor favor revise e intente de nuevo.");
     }else{
         $objResp->confirmCommands(1, "Esta Seguro?");
         $objResp->call("xajax_modificar", $datos);
@@ -166,9 +165,11 @@ function validar_modificar($datos){
 function modificar($datos){
     $objResp = new xajaxResponse();
 
-    $area = new Area($datos["txtId"], $datos["txtNombre"], $datos["txtUbicacion"], $datos["cmbCoordinaciones"]);
+    $pers = new Personal($datos["txtId"], $datos["txtNombre"], $datos["txtApellido"], $datos["txtMail"],  $datos["txtTelf"], $datos["cmbNivel"], $datos["cmbAreas"]);
 
-    $r = $area->modificar();
+    $pers->setEstado($datos["cmbEstado"]);
+
+    $r = $pers->modificar();
 
     if ($r == -1){
         $objResp->alert("Error en la conexión!");
@@ -176,7 +177,7 @@ function modificar($datos){
         $objResp->alert("Error en la consulta!");
     }else{
         $objResp->alert("Actulizado con éxito!");
-        $objResp->redirect("area_vis.php");
+        $objResp->redirect("personal_vis.php");
     }
 
     return $objResp;
