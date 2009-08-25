@@ -185,7 +185,7 @@ class Personal{
                     $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arra[1]."'";
                     $resc = pg_query($consulta);
                     $arrc = pg_fetch_row ($resc, 0);
-                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrn[0]."</td><td>".$arra[0]."</td><td>".$arrc[0]."</td><td><a href=\"area_vis_edit.php?id=".$arr[0]."&idA=".$arr[6]."\">Editar</a></tr>";
+                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrn[0]."</td><td>".$arra[0]."</td><td>".$arrc[0]."</td><td><a href=\"personal_vis_edit.php?id=".$arr[0]."&idN=".$arr[5]."&idA=".$arr[6]."\">Editar</a></tr>";
                     $i++;
                 }
                 $ls .= "</table>";
@@ -199,20 +199,20 @@ class Personal{
     }
 
     public function buscar(){
-        $consulta = "SELECT * FROM ingenieros WHERE cedula='".$this->cedula."'";
+        $consulta = "SELECT * FROM personal WHERE id='".$this->cedula."'";
 
         $conec = new Conexion();
 
         $conec->conectar();
 
         if (!$conec->obtenerConexion()){
-            return "Error en la conexion!";
+            return -1;// Error en la conexión
         }
 
         $resultado = pg_query($consulta);
 
         if (!$resultado){
-            return "Error en la consulta!";
+            return 0;// Error en la consulta
         }else{
             if (pg_numrows($resultado)>0){
                 $arr = pg_fetch_row ($resultado, 0);
@@ -220,15 +220,17 @@ class Personal{
                 $this->apellido = $arr[2];
                 $this->email = $arr[3];
                 $this->telf = $arr[4];
-                $this->login = $arr[5];
+                $this->id_nivel = $arr[5];
+                $this->id_area = $arr[6];
+                $this->passw = $arr[7];
                 $this->estado = $arr[8];
                 pg_FreeResult($resultado);
                 $conec->cerrarConexion();
-                return null;
+                return 1;
             }else{
                 pg_FreeResult($resultado);
                 $conec->cerrarConexion();
-                return "El número de cedula ".$this->cedula.", no esta registrado.\nVerifique e intente de nuevo.";
+                return 1;//"El número de cedula ".$this->cedula.", no esta registrado.\nVerifique e intente de nuevo.";
             }
         }
     }
@@ -373,6 +375,31 @@ class Personal{
         pg_FreeResult($resultado);
         $conec->cerrarConexion();
         return 1;
+    }
+
+    public function ubicarCoordinacion($arg){
+        $consulta = "SELECT * FROM areas WHERE id='".$arg."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Falló la conexión
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Falló la consulta
+        }
+
+        if (pg_numrows($resultado)>0){
+            $arr = pg_fetch_row($resultado, 0);
+            return $arr[3];
+        }else{
+            return -2;
+        }
     }
 }
 ?>

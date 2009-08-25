@@ -10,6 +10,7 @@ $xajax->register(XAJAX_FUNCTION, "modificar");
 $xajax->register(XAJAX_FUNCTION, "init");
 $xajax->register(XAJAX_FUNCTION, "initAdd");
 $xajax->register(XAJAX_FUNCTION, "initEdit");
+$xajax->register(XAJAX_FUNCTION, "cancelar");
 
 // Inicializar vista
 function init(){
@@ -63,7 +64,7 @@ function guardar($datos){
     }
 }
 
-function initEdit($id, $idc){
+function initEdit($id){
     $objResp = new xajaxResponse();
 
     $area = new Area($id);
@@ -92,7 +93,7 @@ function initEdit($id, $idc){
             $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
         }else{
             $objResp->assign("cmbCoordinacion", "innerHTML", $area->getEsquemaCoordinaciones());
-            $objResp->assign("cmbCoordinaciones", "value", $idc);
+            $objResp->assign("cmbCoordinaciones", "value", $area->getId_coord());
         }
     }
 
@@ -161,6 +162,14 @@ function initAdd(){
             $objResp->assign("cmbCoordinacion", "innerHTML", $area->getEsquemaCoordinaciones());
         }
     }
+    return $objResp;
+}
+
+function cancelar(){
+    $objResp = new xajaxResponse();
+
+    $objResp->redirect("area_vis.php");
+
     return $objResp;
 }
 
