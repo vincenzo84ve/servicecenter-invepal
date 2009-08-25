@@ -62,13 +62,17 @@ $ida = $_GET['idA'];
                         <td><input type="password" name="txtClave2" id="txtClave2" class="text"></td>
                 </tr>-->
                 <tr>
-                    <td><div id="lblEstado"></div></td>
-                    <td><div id="estado"></div></td>
+                    <td>Estado:</td>
+                    <td><div id="estado"></div>
+                        <select name="cmbEstado" id="cmbEstado">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
                     <td>
-                        <input type="button" value="Actualizar" onclick="xajax_actualizar(xajax.getFormValues('formulario'));return false;" />
+                        <input type="button" value="Actualizar" onclick="xajax_validar_modificar(xajax.getFormValues('formulario'));return false;" />
                         <input type="button" value="Cancelar" onclick="xajax_cancelar();" />
                     </td>
                 </tr>
