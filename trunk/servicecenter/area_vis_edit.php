@@ -7,7 +7,6 @@ Vista para controlar los niveles que se pueden crear dentro de la bd para el per
 require("area_ctrl.php");
 
 $id = $_GET['id'];
-$idc = $_GET['idC'];
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -16,7 +15,7 @@ $idc = $_GET['idC'];
         <title></title>
         <?php $xajax->printJavascript();?>
     </head>
-    <body onload="xajax_initEdit(<?php echo $id;?>,<?php echo $idc;?>);">
+    <body onload="xajax_initEdit(<?php echo $id;?>);">
         <div id="mensaje"></div>
         <form id="formulario">
             <table class="tabla">
@@ -40,12 +39,10 @@ $idc = $_GET['idC'];
                     <td>&nbsp;</td>
                     <td>
                         <input type="button" value="Actualizar" onclick="xajax_validar_modificar(xajax.getFormValues('formulario'));return false;" />
-        </form>
-                        <form id="formCancel" action="area_vis.php">
-                            <input type="submit" value="Cancelar" name="btnCancelar" />
-                        </form>
+                        <input type="button" value="Cancelar" name="btnCancelar" onclick="xajax_cancelar();" />
                     </td>
                 </tr>
             </table>
+        </form>
     </body>
 </html>

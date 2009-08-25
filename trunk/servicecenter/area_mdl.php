@@ -151,7 +151,7 @@ class Area {
                     $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arr[3]."'";
                     $res = pg_query($consulta);
                     $arrc = pg_fetch_row ($res, 0);
-                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrc[0]."</td><td><a href=\"area_vis_edit.php?id=".$arr[0]."&idC=".$arr[3]."\">Editar</a></tr>";
+                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arr[2]."</td><td>".$arrc[0]."</td><td><a href=\"area_vis_edit.php?id=".$arr[0]."\">Editar</a></tr>";
                     $i++;
                 }
                 $ls .= "</table>";
