@@ -104,7 +104,7 @@ function validar_modificar($datos){
     $objResp = new xajaxResponse();
 
     if (($datos['txtNombre']=="")||($datos['txtUbicacion'])==""){
-        $objResp->alert("Coordinación sin nombre o ubicación!\nPor favor revise e intente de nuevo.");
+        $objResp->alert("Area sin nombre o ubicación!\nPor favor revise e intente de nuevo.");
     }else{
         $objResp->confirmCommands(1, "Esta Seguro?");
         $objResp->call("xajax_modificar", $datos);

@@ -4,7 +4,7 @@ Vista para controlar los niveles que se pueden crear dentro de la bd para el per
 -->
 <?php
 /*seccion includes*/
-require("area_ctrl.php");
+require("equipos_ctrl.php");
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -22,16 +22,20 @@ require("area_ctrl.php");
                     <td><div id="id"><input type="text" name="txtId" id="txtId"  size="6" class="text"></div></td>
                 </tr>
                 <tr>
-                    <td>Nombre:</td>
-                    <td><input type="text" name="txtNombre" id="txtNombre" size="30" class="text" /></td>
+                    <td>Descripci&oacute;n:</td>
+                    <td><input type="text" name="txtDescripcion" id="txtDescripcion" size="30" class="text" /></td>
                 </tr>
                 <tr>
-                    <td>Ubicaci&oacute;n:</td>
-                    <td><input type="text" name="txtUbicacion" id="txtUbicacion" size="30" class="text" /></td>
+                    <td>Marca:</td>
+                    <td><input type="text" name="txtMarca" id="txtMarca" size="30" class="text" /></td>
                 </tr>
                 <tr>
-                    <td>Coordinaci&oacute;n:</td>
-                    <td><div id="cmbCoordinacion"></div></td>
+                    <td>Modelo:</td>
+                    <td><input type="text" name="txtModelo" id="txtModelo" size="30" class="text" /></td>
+                </tr>
+                <tr>
+                    <td>N° Bien:</td>
+                    <td><input type="text" name="txtBien" id="txtBien" size="30" class="text" /></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>

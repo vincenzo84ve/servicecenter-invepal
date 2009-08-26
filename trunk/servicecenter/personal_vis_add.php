@@ -19,7 +19,7 @@ require("personal_ctrl.php");
             <table class="tabla">
                 <tr>
                     <td>Cedula:</td>
-                    <td><div id="ci"><input type="text" name="txtCedula" id="txtCedula" class="text"></div></td>
+                    <td><div id="id"><input type="text" name="txtId" id="txtId" class="text"></div></td>
                 </tr>
                 <tr>
                     <td>Nombre:</td>
@@ -65,8 +65,7 @@ require("personal_ctrl.php");
                     <td>&nbsp;</td>
                     <td>
                         <input type="button" value="Guardar" onclick="xajax_guardar(xajax.getFormValues('formulario'));return false;" />
-                        <input type="button" value="Buscar" onclick="xajax_buscar(document.getElementById('txtCedula').value);" />
-                        <input type="reset" value="Limpiar" class="boton" />
+                        <input type="button" value="Cancelar" onclick="xajax_cancelar()" />
                     </td>
                 </tr>
             </table>

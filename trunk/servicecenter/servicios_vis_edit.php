@@ -4,16 +4,18 @@ Vista para controlar los niveles que se pueden crear dentro de la bd para el per
 -->
 <?php
 /*seccion includes*/
-require("area_ctrl.php");
+require("servicios_ctrl.php");
+
+$id = $_GET['id'];
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>ServiceCenter - Area->A&ntilde;adir</title>
-        <?php $xajax->printJavascript(); ?>
+        <title></title>
+        <?php $xajax->printJavascript();?>
     </head>
-    <body onload="xajax_initAdd();">
+    <body onload="xajax_initEdit(<?php echo $id;?>);">
         <div id="mensaje"></div>
         <form id="formulario">
             <table class="tabla">
@@ -22,21 +24,13 @@ require("area_ctrl.php");
                     <td><div id="id"><input type="text" name="txtId" id="txtId"  size="6" class="text"></div></td>
                 </tr>
                 <tr>
-                    <td>Nombre:</td>
-                    <td><input type="text" name="txtNombre" id="txtNombre" size="30" class="text" /></td>
-                </tr>
-                <tr>
-                    <td>Ubicaci&oacute;n:</td>
-                    <td><input type="text" name="txtUbicacion" id="txtUbicacion" size="30" class="text" /></td>
-                </tr>
-                <tr>
-                    <td>Coordinaci&oacute;n:</td>
-                    <td><div id="cmbCoordinacion"></div></td>
+                    <td>Descripci&oacute;n:</td>
+                    <td><input type="text" name="txtDescripcion" id="txtDescripcion" size="30" class="text"></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
                     <td>
-                        <input type="button" value="Guardar" onclick="xajax_guardar(xajax.getFormValues('formulario'));return false;" />
+                        <input type="button" value="Actualizar" onclick="xajax_validar_modificar(xajax.getFormValues('formulario'));return false;" />
                         <input type="button" value="Cancelar" name="btnCancelar" onclick="xajax_cancelar();" />
                     </td>
                 </tr>
