@@ -19,7 +19,7 @@ require("coordinacion_ctrl.php");
             <table class="tabla">
                 <tr>
                     <td>Id:</td>
-                    <td><div id="id"><input type="text" name="txtId" id="txtId"  size="6" class="text"></div></td>
+                    <td><div id="id"><input type="text" name="txtId" id="txtId"  size="6" class="text" /></div></td>
                 </tr>
                 <tr>
                     <td>Nombre:</td>
