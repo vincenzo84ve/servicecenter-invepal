@@ -114,7 +114,7 @@ function modificar($datos){
         $objResp->alert("Error en la consulta!");
     }else{
         $objResp->alert("Actulizado con éxito!");
-        $objResp->redirect("servicios_vis.php");
+        $objResp->redirect("equipos_vis.php");
     }
 
     return $objResp;
