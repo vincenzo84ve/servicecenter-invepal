@@ -11,6 +11,7 @@ $xajax->register(XAJAX_FUNCTION, "init");
 $xajax->register(XAJAX_FUNCTION, "initAdd");
 $xajax->register(XAJAX_FUNCTION, "initEdit");
 $xajax->register(XAJAX_FUNCTION, "cancelar");
+$xajax->register(XAJAX_FUNCTION, "anhiadir");
 
 // Inicializar vista
 function init(){
@@ -168,7 +169,15 @@ function initAdd(){
 function cancelar(){
     $objResp = new xajaxResponse();
 
-    $objResp->redirect("area_vis.php");
+    $objResp->redirect("index.php?sec=area_vis");
+
+    return $objResp;
+}
+
+function anhiadir(){
+    $objResp = new xajaxResponse();
+
+    $objResp->redirect("index.php?sec=area_vis_add");
 
     return $objResp;
 }

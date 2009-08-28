@@ -29,9 +29,7 @@ require("area_ctrl.php");
             <tr>
                 <td>&nbsp;</td>
                 <td>
-                    <form id="form1" action="area_vis_add.php">
-                        <input type="submit" value="A&ntilde;adir" name="btnAdd" />
-                    </form>
+                    <input type="button" value="A&ntilde;adir" name="btnAdd" onclick="xajax_anhiadir();" />
                 </td>
             </tr>
         </table>

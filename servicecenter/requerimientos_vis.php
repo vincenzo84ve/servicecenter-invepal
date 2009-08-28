@@ -4,26 +4,27 @@ and open the template in the editor.
 -->
 <?php
 /*seccion includes*/
-require("personal_ctrl.php");
+require("requerimientos_ctrl.php");
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>ServiceCenter - Coordinaciones</title>
+        <title>ServiceCenter - Servicios</title>
         <?php $xajax->printJavascript(); ?>
     </head>
     <body onload="xajax_init();">
         <div id="mensaje"></div>
-        <div id="listadoPersonal">
+        <div id="listadoRequerimientos">
             <table class="tabla">
                 <tr>
-                    <td><b>ID</b></td>
-                    <td><b>Nombre</b></td>
-                    <td><b>Apellido</b></td>
-                    <td><b>Nivel</b></td>
-                    <td><b>&Aacute;rea</b></td>
-                    <td><b>Coordinaci&oacute;n</b></td>
+                    <td><b>&nbsp;ID&nbsp;</b></td>
+                    <td><b>&nbsp;Fecha&nbsp;</b></td>
+                    <td><b>&nbsp;Servicio&nbsp;</b></td>
+                    <td><b>&nbsp;Personal&nbsp;</b></td>
+                    <td><b>&nbsp;Area&nbsp;</b></td>
+                    <td><b>&nbsp;Coordinaci&oacute;n&nbsp;</b></td>
+                    <td><b>&nbsp;Estado&nbsp;</b></td>
                 </tr>
             </table>
         </div>
@@ -31,10 +32,9 @@ require("personal_ctrl.php");
             <tr>
                 <td>&nbsp;</td>
                 <td>
-                    <input type="button" value="A&ntilde;adir" name="btnAdd" onclick="xajax_anhiadir();" />
-                    <!--<form id="form1" action="index.php?sec=personal_vis_add">
+                    <form id="form1" action="requerimientos_vis_add.php">
                         <input type="submit" value="A&ntilde;adir" name="btnAdd" />
-                    </form>-->
+                    </form>
                 </td>
             </tr>
         </table>

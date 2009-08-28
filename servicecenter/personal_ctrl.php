@@ -12,6 +12,7 @@ $xajax->register(XAJAX_FUNCTION, "init");
 $xajax->register(XAJAX_FUNCTION, "initAdd");
 $xajax->register(XAJAX_FUNCTION, "initEdit");
 $xajax->register(XAJAX_FUNCTION, "lsAreas");
+$xajax->register(XAJAX_FUNCTION, "anhiadir");
 
 // Inicializar vista
 function init(){
@@ -242,7 +243,15 @@ function lsAreas($arg){
 function cancelar(){
     $objResp = new xajaxResponse();
 
-    $objResp->redirect("personal_vis.php");
+    $objResp->redirect("index.php?sec=personal_vis");
+
+    return $objResp;
+}
+
+function anhiadir(){
+    $objResp = new xajaxResponse();
+
+    $objResp->redirect("index.php?sec=personal_vis_add");
 
     return $objResp;
 }

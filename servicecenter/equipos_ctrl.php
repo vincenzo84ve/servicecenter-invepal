@@ -28,7 +28,7 @@ function init(){
     }else{
         $lst = $eq->getLista();
         if ($lst == null){
-            $lst = "<tr><td><b>ID</b></td><td><b>Descripci&oacute;n</b></td><td><b>Marca</b></td><td><b>Modelo</b></td><td><b>N° Bien:</b></td></tr></table><p>";
+            $lst = "<table><tr><td><b>ID</b></td><td><b>Descripci&oacute;n</b></td><td><b>Marca</b></td><td><b>Modelo</b></td><td><b>N° Bien:</b></td></tr></table><p>";
             $lst .= "No hay equipos registrados a&uacute;n!";
             $objResp->assign("listadoEquipos", "innerHTML", $lst);
         }else{
