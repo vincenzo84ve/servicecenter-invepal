@@ -97,12 +97,12 @@ function initEdit($id, $idn, $ida){
 
             if ($r == -1){
                 $objResp->alert("Error en la conexión\nImposible generar lista de niveles");
-                $objResp->assign("cmbNivel", "innerHTML", "Imposible generar lista de niveles");
+                $objResp->assign("lblNivel", "innerHTML", "Imposible generar lista de niveles");
             }else if ($r == 0){
                 $objResp->alert("Error en la consulta\nImposible generar lista de niveles");
-                $objResp->assign("cmbNivel", "innerHTML", "Imposible generar lista de niveles");
+                $objResp->assign("lblNivel", "innerHTML", "Imposible generar lista de niveles");
             }else{
-                $objResp->assign("cmbNivel", "innerHTML", $pers->getesquemaNiveles());
+                $objResp->assign("lblNivel", "innerHTML", $pers->getesquemaNiveles());
                 $objResp->assign("cmbNivel", "value", $pers->getNivel());
             }
 
@@ -110,25 +110,25 @@ function initEdit($id, $idn, $ida){
 
             if ($c == -1){
                 $objResp->alert("Error en la conexión\nImposible generar lista de coordinaciones");
-                $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
+                $objResp->assign("lblCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
             }else if ($c == 0){
                 $objResp->alert("Error en la consulta\nImposible generar lista de coordinaciones");
-                $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
+                $objResp->assign("lblCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
             }else if ($c == -2){
                 $objResp->alert("Error en la consulta\nImposible generar lista de coordinaciones");
-                $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
+                $objResp->assign("lblCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
             }else{
                 $r = $pers->cmbCoordinaciones();
 
                 if ($r == -1){
                     $objResp->alert("Error en la conexión\nImposible generar lista de coordinaciones");
-                    $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
+                    $objResp->assign("lblCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
                 }else if ($r == 0){
                     $objResp->alert("Error en la consulta\nImposible generar lista de coordinaciones");
-                    $objResp->assign("cmbCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
+                    $objResp->assign("lblCoordinacion", "innerHTML", "Imposible generar lista de coordinaciones");
                 }else{
-                    $objResp->assign("cmbCoordinacion", "innerHTML", $pers->getesquemaCoordinaciones());
-                    $objResp->assign("cmbCoordinacion", "value", $c);
+                    $objResp->assign("lblCoordinacion", "innerHTML", $pers->getesquemaCoordinaciones());
+                    $objResp->assign("cmbCoordinaciones", "value", $c);
                 }
             }
 
@@ -136,12 +136,12 @@ function initEdit($id, $idn, $ida){
 
             if ($r == -1){
                 $objResp->alert("Error en la conexión\nImposible generar lista de &aacute;reas");
-                $objResp->assign("cmbArea", "innerHTML", "Imposible generar lista de &aacute;reas");
+                $objResp->assign("lblArea", "innerHTML", "Imposible generar lista de &aacute;reas");
             }else if ($r == 0){
                 $objResp->alert("Error en la consulta\nImposible generar lista de &aacute;reas");
-                $objResp->assign("cmbArea", "innerHTML", "Imposible generar lista de &aacute;reas");
+                $objResp->assign("lblArea", "innerHTML", "Imposible generar lista de &aacute;reas");
             }else{
-                $objResp->assign("cmbArea", "innerHTML", $pers->getesquemaAreas());
+                $objResp->assign("lblArea", "innerHTML", $pers->getesquemaAreas());
                 $objResp->assign("cmbArea", "value", $c);
             }
         }
@@ -234,7 +234,7 @@ function lsAreas($arg){
     }else if ($r == 0){
         $objResp->alert("Error en la consulta!\nImposible generar lista de áreas.");
     }else{
-        $objResp->assign("cmbArea", "innerHTML", $pers->getesquemaAreas());
+        $objResp->assign("lblArea", "innerHTML", $pers->getesquemaAreas());
     }
 
     return $objResp;

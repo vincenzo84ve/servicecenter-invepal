@@ -43,15 +43,15 @@ $ida = $_GET['idA'];
                 </tr>
                 <tr>
                     <td>Nivel:</td>
-                    <td><div id="cmbNivel"></div></td>
+                    <td><div id="lblNivel"></div></td>
                 </tr>
                 <tr>
                     <td>Coordinaci&oacute;n:</td>
-                    <td><div id="cmbCoordinacion"></div></td>
+                    <td><div id="lblCoordinacion"></div></td>
                 </tr>
                 <tr>
                     <td>&Aacute;rea:</td>
-                    <td><div id="cmbArea"></div></td>
+                    <td><div id="lblArea"></div></td>
                 </tr>
                 <!--<tr>
                     <td>Clave:</td>

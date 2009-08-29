@@ -4,7 +4,7 @@ require_once("xajax_core/xajaxAIO.inc.php");
 
 $xajax = new xajax("requerimientos_mdl.php");
 
-$xajax->register(XAJAX_FUNCTION, "guardar");
+$xajax->register(XAJAX_FUNCTION, "emitir");
 $xajax->register(XAJAX_FUNCTION, "validar_modificar");
 $xajax->register(XAJAX_FUNCTION, "modificar");
 $xajax->register(XAJAX_FUNCTION, "cancelar");
@@ -41,25 +41,55 @@ function init(){
 }
 
 // Funcion para guardar los datos
-function guardar($datos){
+function emitir($datos){
     $objResp = new xajaxResponse();
 
-    if (($datos["txtId"]=="")||($datos["txtDescripcion"]=="")){
-        $objResp->alert("Existen campos vacios!\nPor favor revise e intente de nuevo.");
-        return $objResp;
+    $req = new Requerimiento($datos["txtId"], $datos["txtFecha"], $datos["cmbServicios"], $datos["txtDescripcion"], "", "", "", "", $datos["cmbEquipos"], "", "", "", $datos["txtIdP"], "pendiente", "");
+
+    $r = $req->guardar();
+
+    if ($r == -1){
+        $objResp->alert("Error en la conexión!");
+    }else if($r == 0){
+        $objResp->alert("Error en la consulta!");
     }else{
-        $eq = new Equipo($datos["txtId"], $datos["txtDescripcion"], $datos["txtMarca"], $datos["txtModelo"], $datos["txtBien"]);
-
-        $r = $eq->guardar();
-
+        //Envio el correo al coordinador general
+        $r = $req->correoCordinador();
+        
         if ($r == -1){
             $objResp->alert("Error en la conexión!");
         }else if($r == 0){
             $objResp->alert("Error en la consulta!");
         }else{
-            $objResp->alert("Guardado con éxito!");
-            $objResp->redirect("equipos_vis.php");
+            if (($req->getCorreoCoordinador()==null )|| ($req->getNomCoordinador()==null)){
+                $objResp->alert("Error area sin coordinador o coordinador si mail registrado!");
+            }else{
+                $objResp->alert($req->getCorreoCoordinador());
+
+                $req->Datos($req->getId_personal());
+
+                $cabeceras = "Content-type: text/html\r\n";
+
+                $asunto = "Solicitud de Requerimientos - Soporte Tecnico";
+
+                $mensaje = "<h1>Informe para aprobac&oacute;n de solicitud de requerimiento</h1><p><br />";
+                $mensaje .= "<u>Solicitud de requerimiento No.</u>".$req->getId()."<br />";
+                $mensaje .= "<u>Solicitado por:</u>".$req->getNomP()."<br />";
+                $mensaje .= "<u>Descripci&oacute;n del requerimiento:</u>".$req->getDescripcion()."<br />";
+                $mensaje .= "Estamiado, ".$req->getNomCoordinador()." coordinador del &aacute;rea de ".$req->getCoordinacion()." agredecemos su pronta atención con el referido caso,<br />";
+                $mensaje .= "para hacer seguimiento del mismo puede acceder al sistema de soporte haciendo click aqu&iacute;: <a href=\"http://".$_SERVER['HTTP_HOST']."/servicecenter/\">servicecenter</a>";
+
+                $r = mail($req->getCorreoCoordinador(),$asunto,$mensaje, $cabeceras);
+
+                if ($r){
+                    $objResp->alert("Requerimiento emitido con éxito!");
+                }else{
+                    $objResp->alert("Incorrecto!");
+                }
+            }
         }
+        $objResp->alert("Guardado con éxito!");
+        $objResp->redirect("requerimientos_vis.php");
     }
     return $objResp;
 }
@@ -67,9 +97,9 @@ function guardar($datos){
 function initEdit($id){
     $objResp = new xajaxResponse();
 
-    $eq = new Equipo($id);
+    $req = new Requerimiento($id);
 
-    $r = $eq->buscar();
+    $r = $req->buscar();
 
     if ($r == -1){
         $objResp->alert("Error en la conexión!");
@@ -176,7 +206,7 @@ function initAdd($arg){
         $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
     }else{// si realizo la consulta con éxito
         // inicializo la vista
-        $objResp->assign("cmbServicios", "innerHTML", $req->getServicios());
+        $objResp->assign("lblServicios", "innerHTML", $req->getServicios());
     }
 
     $r = $req->equipos();
@@ -187,7 +217,7 @@ function initAdd($arg){
         $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
     }else{// si realizo la consulta con éxito
         // inicializo la vista
-        $objResp->assign("cmbEquipos", "innerHTML", $req->getEquipos());
+        $objResp->assign("lblEquipos", "innerHTML", $req->getEquipos());
     }
 
     return $objResp;

@@ -35,8 +35,11 @@ class Requerimiento {
     var $nomPersonal;
     var $servicios;
     var $equipos;
+    var $estado;
+    var $mailCoordinador;
+    var $nomCoordinador;
 
-    function __construct($id=1, $fecha=null, $id_servicio=null, $descripcion=null, $fecha_ap=null, $fecha_as=null, $fecha_in=null, $fecha_fi=null, $id_equipo=null, $diagnostico=null, $solucion=null, $documentacion=null, $id_personal=null, $lst=null) {
+    function __construct($id=1, $fecha=null, $id_servicio=null, $descripcion=null, $fecha_ap=null, $fecha_as=null, $fecha_in=null, $fecha_fi=null, $id_equipo=null, $diagnostico=null, $solucion=null, $documentacion=null, $id_personal=null, $est=null, $lst=null, $mailC=null, $nomC=null) {
         $this->id = $id;
         $this->fecha = $fecha;
         $this->id_servicio = $id_servicio;
@@ -51,6 +54,9 @@ class Requerimiento {
         $this->documentacion = $documentacion;
         $this->id_personal = $id_personal;
         $this->html_lst = $lst;
+        $this->estado = $est;
+        $this->mailCoordinador = $mailC;
+        $this->nomCoordinador = $nomC;
     }
 
     public function getId() {
@@ -205,6 +211,30 @@ class Requerimiento {
         return $this->equipos;
     }
 
+    public function setEstado($arg){
+        $this->estado = $arg;
+    }
+
+    public function getEstado(){
+        return $this->estado;
+    }
+
+    public function setCorreoCoordinador($arg){
+        $this->mailCoordinador = $arg;
+    }
+
+    public function getCorreoCoordinador(){
+        return $this->mailCoordinador;
+    }
+
+    public function setNomCoordinador($arg){
+        $this->nomCoordinador = $arg;
+    }
+
+    public function getNomCoordinador(){
+        return $this->nomCoordinador;
+    }
+
     public function listar(){
         $consulta = "SELECT * FROM requerimientos ORDER BY id ASC";
 
@@ -254,7 +284,7 @@ class Requerimiento {
     }
 
     function idRequerimiento(){// Incrementar el nivel del id generado
-        $consulta = "SELECT id FROM requerimientos ORDER BY id DESC LIMIT 1";
+        $consulta = "SELECT id FROM requerimientos ORDER BY CAST(id as integer) DESC LIMIT 1";
 
         $conec = new Conexion();
 
@@ -379,5 +409,84 @@ class Requerimiento {
         return 1;
     }
 
+    function guardar(){
+        $consulta = "INSERT INTO requerimientos (id, fecha, id_servicio, descripcion, id_equipo, id_personal, estado) VALUES ('".$this->id."', '".$this->fecha."', '".$this->id_servicio."', '".$this->descripcion."', '".$this->id_equipo."', '".$this->id_personal."', '".$this->estado."')";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;//Fallo la conexion
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado) {
+            return 0; //Fallo la consulta
+        }else{
+            pg_FreeResult($resultado);
+            $conec->cerrarConexion();
+            return 1; //Se ejecuto con éxito
+        }
+    }
+
+    function correoCordinador(){
+        // Selecciono el área a la cual pertenece el personal solicitante del requerimiento
+        $consulta = "SELECT id_area FROM personal WHERE id='".$this->id_personal."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Error en la conexion
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0;// Error en la consulta
+        }else{
+            $arr = pg_fetch_row($resultado, 0);
+
+            $consulta = "SELECT correo, nombre, apellido FROM personal WHERE id_area='".$arr[0]."' and id_nivel='3'";
+
+            $resultado = pg_query($consulta);
+
+            if (pg_numrows($resultado)>0){
+                $arr = pg_fetch_row($resultado, 0);
+
+                $this->mailCoordinador = $arr[0];
+                $this->nomCoordinador = $arr[1]." ".$arr[2];
+            }
+            return 1; //Se ejecuto con éxito
+        }
+    }
+
+    function buscar(){
+        $consulta = "SELECT * FROM equipos WHERE id='".$this->id."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Falló la conexión
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0;// Falló la consulta
+        }else{
+            $arr = pg_fetch_row ($resultado, 0);
+            $this->descripcion = $arr[1];
+            $this->marca = $arr[2];
+            $this->modelo = $arr[3];
+            $this->nBien = $arr[4];
+            return 1;// Consulta exitosa
+        }
+    }
 }
 ?>
