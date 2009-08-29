@@ -28,7 +28,7 @@ require("servicios_ctrl.php");
                 <tr>
                     <td>&nbsp;</td>
                     <td>
-                        <input type="button" value="Guardar" onclick="xajax_guardar(xajax.getFormValues('formulario'));return false;" />
+                        <input type="button" value="Guardar" onclick="xajax_gurdar(xajax.getFormValues('formulario'));return false;" />
                         <input type="button" value="Cancelar" onclick="xajax_cancelar()" />
                     </td>
                 </tr>

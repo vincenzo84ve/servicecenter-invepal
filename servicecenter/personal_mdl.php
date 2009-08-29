@@ -299,7 +299,7 @@ class Personal{
             return 0; // Falló la consulta
         }
 
-        $this->esquemaC = "<select name=\"cmbCoordinaciones\" id=\"cmbCoordinaciones\" onclick=\"xajax_lsAreas(document.getElementById('cmbCoordinaciones').value);\" >";
+        $this->esquemaC = "<select name=\"cmbCoordinaciones\" id=\"cmbCoordinaciones\" onchange=\"xajax_lsAreas(document.getElementById('cmbCoordinaciones').value);\" >";
         $i = 0;
         while ($i < pg_numrows($resultado)){
             $arr = pg_fetch_row($resultado, $i);

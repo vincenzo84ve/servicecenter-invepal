@@ -39,18 +39,18 @@ $id = $_GET['id'];
                 </tr>
                 <tr>
                     <td>Servicio:</td>
-                    <td><div id="cmbServicios"></div></td>
+                    <td><div id="lblServicios"></div></td>
                     <td>Equipo:</td>
-                    <td><div id="cmbEquipos"></div></td>
+                    <td><div id="lblEquipos"></div></td>
                 </tr>
                 <tr>
                     <td>Descripci&oacute;n:</td>
-                    <td colspan="3"><textarea name="Descripción" rows="4" cols="80"></textarea></td>
+                    <td colspan="3"><textarea name="txtDescripción" rows="4" cols="80"></textarea></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
                     <td>
-                        <input type="button" value="Guardar" onclick="xajax_guardar(xajax.getFormValues('formulario'));return false;" />
+                        <input type="button" value="Emitir" onclick="xajax_emitir(xajax.getFormValues('formulario'));return false;" />
                         <input type="button" value="Cancelar" name="btnCancelar" onclick="xajax_cancelar();" />
                     </td>
                 </tr>
