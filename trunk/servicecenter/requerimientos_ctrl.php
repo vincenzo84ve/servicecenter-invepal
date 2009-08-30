@@ -18,16 +18,16 @@ $xajax->registerFunction(XAJAX_FUNCTION, "anhiadir");
 function init(){
     $objResp = new xajaxResponse();
 
-    $eq = new Requerimiento();
+    $req = new Requerimiento();
 
-    $r = $eq->listar();
+    $r = $req->listar();
 
     if ($r == -1){
         $objResp->alert("Error en la conexión!\nImposible listar los requerimientos.");
     }else if ($r == 0){
         $objResp->alert("Error en la consulta!\nImposible listar los requerimientos.");
     }else{
-        $lst = $eq->getLista();
+        $lst = $req->getLista();
         if ($lst == null){
             $lst = "<tr><td><b>&nbsp;ID&nbsp;</b></td><td><b>&nbsp;Fecha&nbsp;</b></td><td><b>&nbsp;Servicio&nbsp;</b></td><td><b>&nbsp;Personal&nbsp;</b></td><td><b>&nbsp;Area&nbsp;</b></td><td><b>&nbsp;Coordinaci&oacute;n&nbsp;</b></td><td><b>&nbsp;Estado&nbsp;</b></td></tr></table><p>";
             $lst .= "No existen requerimientos registrados a&uacute;n!";

@@ -45,7 +45,7 @@ $id = $_GET['id'];
                 </tr>
                 <tr>
                     <td>Descripci&oacute;n:</td>
-                    <td colspan="3"><textarea name="txtDescripción" rows="4" cols="80"></textarea></td>
+                    <td colspan="3"><textarea name="txtDescripcion" id="txtDescripcion" rows="4" cols="80"></textarea></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
