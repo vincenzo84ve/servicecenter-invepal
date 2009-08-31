@@ -13,14 +13,15 @@ $xajax->register(XAJAX_FUNCTION, "initAdd");
 $xajax->register(XAJAX_FUNCTION, "initEdit");
 $xajax->registerFunction(XAJAX_FUNCTION, "cancelar");
 $xajax->registerFunction(XAJAX_FUNCTION, "anhiadir");
+$xajax->register(XAJAX_FUNCTION, "buscarID");
 
 // Inicializar vista
-function init(){
+function init($pagina, $inicio){
     $objResp = new xajaxResponse();
 
     $req = new Requerimiento();
 
-    $r = $req->listar();
+    $r = $req->listar($pagina, $inicio);
 
     if ($r == -1){
         $objResp->alert("Error en la conexión!\nImposible listar los requerimientos.");
@@ -34,6 +35,8 @@ function init(){
             $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
         }else{
             $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
+            $objResp->assign("datosPaginacion", "innerHTML", $req->getDatosPag());
+            $objResp->assign("paginacion", "innerHTML", $req->getPaginacion());
         }
     }
 
@@ -253,6 +256,27 @@ function anhiadir(){
     $objResp = new xajaxResponse();
 
     $objResp->redirect("index.php?sec=requerimientos_vis_add");
+
+    return $objResp;
+}
+
+function buscarID($arg){
+    $objResp = new xajaxResponse();
+
+    $req = new Requerimiento($arg);
+
+    $r = $req->buscar();
+    
+    if ($r == -1){
+        $objResp->alert("Error en la conexión!\nImposible mostrar el registro especificado.");
+    }else if ($r == 0){
+        $objResp->alert("Error en la consulta!\nImposible mostrar el registro especificado.");
+    }else{
+        $objResp->assign("listadoRequerimientos", "innerHTML", $req->getLista());
+        $objResp->assign("datosPaginacion", "innerHTML", $req->getDatosPag());
+    }
+
+    $objResp->alert($arg);
 
     return $objResp;
 }
