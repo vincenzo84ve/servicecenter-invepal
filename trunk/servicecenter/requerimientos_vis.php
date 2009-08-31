@@ -5,6 +5,20 @@ and open the template in the editor.
 <?php
 /*seccion includes*/
 require("requerimientos_ctrl.php");
+
+//Limito la busqueda
+$TAMANO_PAGINA = 10;
+
+$pagina = $_GET["pagina"];
+
+//examino la página a mostrar y el inicio del registro a mostrar
+if (!$pagina) {
+    $inicio = 0;
+    $pagina=1;
+}
+else {
+    $inicio = ($pagina - 1) * $TAMANO_PAGINA;
+}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -13,8 +27,9 @@ require("requerimientos_ctrl.php");
         <title>ServiceCenter - Servicios</title>
         <?php $xajax->printJavascript(); ?>
     </head>
-    <body onload="xajax_init();">
-        <div id="mensaje"></div>
+    <body onload="xajax_init(<?php echo $pagina;?>,<?php echo $inicio;?>);">
+        <div id="datosPaginacion"></div>
+        <div align="right">Buscar: <input type="text" name="txtIduscar" id="txtIdBuscar" /><input type="button" value="..." name="btnBuscar" id="btnBuscar" onclick="xajax_buscarID(document.getElementById('txtIdBuscar').value);"/></div>
         <div id="listadoRequerimientos">
             <table class="tabla">
                 <tr>
@@ -32,6 +47,7 @@ require("requerimientos_ctrl.php");
             <tr>
                 <td>&nbsp;</td>
                 <td>
+                    <div id="paginacion"></div>
                     <form id="form1" action="requerimientos_vis_add.php">
                         <input type="submit" value="A&ntilde;adir" name="btnAdd" />
                     </form>
