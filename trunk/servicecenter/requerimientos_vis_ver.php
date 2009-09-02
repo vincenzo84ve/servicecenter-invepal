@@ -15,9 +15,9 @@ $id = $_GET['id'];
         <title>ServiceCenter - Area->A&ntilde;adir</title>
         <?php $xajax->printJavascript(); ?>
     </head>
-    <body onload="xajax_initAdd(<?php echo $id; ?>);">
+    <body onload="xajax_initVer(<?php echo $id; ?>);">
+        <div id="mensaje"></div>
         <form id="formulario">
-            <div id="idcoor"></div>
             <table class="tabla">
                 <tr>
                     <td>ID:</td>
@@ -45,7 +45,7 @@ $id = $_GET['id'];
                 </tr>
                 <tr>
                     <td>Descripci&oacute;n:</td>
-                    <td colspan="3"><textarea name="txtDescripcion" id="txtDescripcion" rows="4" cols="80"></textarea></td>
+                    <td colspan="3"><div id="lblDescripcion"></div></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
