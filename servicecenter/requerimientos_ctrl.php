@@ -14,6 +14,10 @@ $xajax->register(XAJAX_FUNCTION, "initEdit");
 $xajax->registerFunction(XAJAX_FUNCTION, "cancelar");
 $xajax->registerFunction(XAJAX_FUNCTION, "anhiadir");
 $xajax->register(XAJAX_FUNCTION, "buscarID");
+$xajax->register(XAJAX_FUNCTION, "initVer");
+$xajax->register(XAJAX_FUNCTION, "initBandejaCoordinador");
+$xajax->register(XAJAX_FUNCTION, "aprobar");
+$xajax->register(XAJAX_FUNCTION, "anular");
 
 // Inicializar vista
 function init($pagina, $inicio){
@@ -47,7 +51,7 @@ function init($pagina, $inicio){
 function emitir($datos){
     $objResp = new xajaxResponse();
 
-    $req = new Requerimiento($datos["txtId"], $datos["txtFecha"], $datos["cmbServicios"], $datos["txtDescripcion"], "", "", "", "", $datos["cmbEquipos"], "", "", "", $datos["txtIdP"], "pendiente", "");
+    $req = new Requerimiento($datos["txtId"], $datos["txtFecha"], $datos["cmbServicios"], $datos["txtDescripcion"], "", "", "", "", $datos["cmbEquipos"], "", "", "", $datos["txtIdP"], "pendiente", "", "", "", $datos["txtIdCoordinacion"]);
 
     $r = $req->guardar();
 
@@ -193,6 +197,9 @@ function initAdd($arg){
         $textID ="<input type=\"text\" name=\"txtCoordinacion\" id=\"txtCoordinacion\"  size=\"22\" readonly=\"readonly\" />";
         $objResp->assign("lblCoordinacion", "innerHTML", $textID);
         $objResp->assign("txtCoordinacion", "value", $req->getCoordinacion());
+        $textIC ="<input type=\"hidden\" name=\"txtIdCoordinacion\" id=\"txtIdCoordinacion\"  size=\"22\" />";
+        $objResp->assign("idcoor", "innerHTML", $textIC);
+        $objResp->assign("txtIdCoordinacion", "value", $req->getIdCoordinacion());
     }
 
     $text = "<input type=\"text\" name=\"txtFecha\" id=\"txtFecha\"  size=\"16\" readonly=\"readonly\" />";
@@ -244,10 +251,10 @@ function lsAreas($arg){
     return $objResp;
 }
 
-function cancelar(){
+function cancelar($url){
     $objResp = new xajaxResponse();
 
-    $objResp->redirect("requerimientos_vis.php");
+    $objResp->redirect($url);
 
     return $objResp;
 }
@@ -276,8 +283,160 @@ function buscarID($arg){
         $objResp->assign("datosPaginacion", "innerHTML", $req->getDatosPag());
     }
 
-    $objResp->alert($arg);
+    return $objResp;
+}
 
+function initVer($arg){
+    $objResp = new xajaxResponse();
+
+    $req = new Requerimiento($arg);
+
+    $r = $req->detalles($arg);
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible generar detalles de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible generar detalles de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista para añadir nuevas areas
+        $textBox = "<input type=\"text\" name=\"txtId\" id=\"txtId\"  size=\"6\" readonly=\"readonly\" />";
+
+        $objResp->assign("id", "innerHTML", $textBox);
+        $objResp->assign("txtId", "value", $req->getId());
+    }
+
+    $r = $req->Datos($req->getId_personal());
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $text ="<input type=\"text\" name=\"txtIdP\" id=\"txtIdP\"  size=\"6\" readonly=\"readonly\" />";
+        $objResp->assign("lblID", "innerHTML", $text);
+        $objResp->assign("txtIdP", "value", $req->getId_personal());
+        $text ="<input type=\"text\" name=\"txtNomP\" id=\"txtNomP\"  size=\"22\" readonly=\"readonly\" />";
+        $objResp->assign("lblNombre", "innerHTML", $text);
+        $objResp->assign("txtNomP", "value", $req->getNomP());
+        $text ="<input type=\"text\" name=\"txtArea\" id=\"txtArea\"  size=\"22\" readonly=\"readonly\" />";
+        $objResp->assign("lblArea", "innerHTML", $text);
+        $objResp->assign("txtArea", "value", $req->getArea());
+        $textID ="<input type=\"text\" name=\"txtCoordinacion\" id=\"txtCoordinacion\"  size=\"22\" readonly=\"readonly\" />";
+        $objResp->assign("lblCoordinacion", "innerHTML", $textID);
+        $objResp->assign("txtCoordinacion", "value", $req->getCoordinacion());
+    }
+
+    $text = "<input type=\"text\" name=\"txtFecha\" id=\"txtFecha\"  size=\"16\" readonly=\"readonly\" />";
+    $objResp->assign("lblFecha", "innerHTML", $text);
+    $ahora = getdate();
+    $fecha = $ahora["mday"] . "/" . $ahora["mon"] . "/" . $ahora["year"]." ".$ahora["hours"] . ":" . $ahora["minutes"] . ":" . $ahora["seconds"];
+    $objResp->assign("txtFecha", "value", $fecha);
+
+    $r = $req->servicios();
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblServicios", "innerHTML", $req->getServicios());
+    }
+
+    $r = $req->equipos();
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblEquipos", "innerHTML", $req->getEquipos());
+    }
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblDescripcion", "innerHTML", $req->getDescripcion());
+    }
+
+    return $objResp;
+}
+
+function initBandejaCoordinador($pag, $ini, $id){
+    $objResp = new xajaxResponse();
+
+    $req = new Requerimiento();
+
+    $r = $req->listarBandejaCoordinador($pag, $ini, $id);
+
+    if ($r == -1){
+        $objResp->alert("Error en la conexión!\nImposible listar los requerimientos.");
+    }else if ($r == 0){
+        $objResp->alert("Error en la consulta!\nImposible listar los requerimientos.");
+    }else{
+        $lst = $req->getLista();
+        if ($lst == null){
+            $lst = "<tr><td><b>&nbsp;ID&nbsp;</b></td><td><b>&nbsp;Fecha&nbsp;</b></td><td><b>&nbsp;Servicio&nbsp;</b></td><td><b>&nbsp;Personal&nbsp;</b></td><td><b>&nbsp;Area&nbsp;</b></td><td><b>&nbsp;Coordinaci&oacute;n&nbsp;</b></td><td><b>&nbsp;Estado&nbsp;</b></td></tr></table><p>";
+            $lst .= "No existen requerimientos registrados a&uacute;n!";
+            $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
+        }else{
+            $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
+            $objResp->assign("datosPaginacion", "innerHTML", $req->getDatosPag());
+            $objResp->assign("paginacion", "innerHTML", $req->getPaginacion());
+        }
+    }
+
+    return $objResp;
+}
+
+function aprobar($datos){
+    $objResp = new xajaxResponse();
+
+    $objResp->alert($datos["txtId"]);
+
+    $req = new Requerimiento($datos["txtId"]);
+
+    $r = $req->aprobar();
+
+    if ($r == -1){
+        $objResp->alert("Error en la conexión\nImposible aprobar requerimiento.");
+    }else if($r == 0){
+        $objResp->alert("Error en la consulta\nImposible aprobar requerimiento.");
+    }else{
+        //Envio el correo al superusuario del sistema
+        $r = $req->correoSuperUsuario();
+
+        
+
+        if ($r == -1){
+            $objResp->alert("Error en la conexión!");
+        }else if($r == 0){
+            $objResp->alert("Error en la consulta!");
+        }else{
+            $objResp->alert($req->getCorreoSU());
+            $cabeceras = "Content-type: text/html\r\n";
+
+            $asunto = "Solicitud de Requerimientos - Soporte Tecnico";
+
+            $mensaje = "<h1>Informe para asignaci&oacute;n de solicitud de requerimiento</h1><p><br />";
+            $mensaje .= "<u>Solicitud de requerimiento No.</u>".$req->getId()."<br />";
+            $mensaje .= "<u>Solicitado por:</u>".$req->getNomP()."<br />";
+            $mensaje .= "Para hacer seguimiento del mismo puede acceder al sistema de soporte haciendo click aqu&iacute;: <a href=\"http://".$_SERVER['HTTP_HOST']."/servicecenter/\">servicecenter</a>";
+
+            $r = mail("a.kastro@gmail.com",$asunto,$mensaje,$cabeceras);
+
+            if ($r){
+                $objResp->alert("Requerimiento aprobado con éxito!");
+            }else{
+                $objResp->alert("Incorrecto!");
+            }
+        }
+    }
     return $objResp;
 }
 

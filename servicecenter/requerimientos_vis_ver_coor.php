@@ -15,9 +15,9 @@ $id = $_GET['id'];
         <title>ServiceCenter - Area->A&ntilde;adir</title>
         <?php $xajax->printJavascript(); ?>
     </head>
-    <body onload="xajax_initAdd(<?php echo $id; ?>);">
+    <body onload="xajax_initVer(<?php echo $id; ?>);">
+        <div id="mensaje"></div>
         <form id="formulario">
-            <div id="idcoor"></div>
             <table class="tabla">
                 <tr>
                     <td>ID:</td>
@@ -45,13 +45,14 @@ $id = $_GET['id'];
                 </tr>
                 <tr>
                     <td>Descripci&oacute;n:</td>
-                    <td colspan="3"><textarea name="txtDescripcion" id="txtDescripcion" rows="4" cols="80"></textarea></td>
+                    <td colspan="3"><div id="lblDescripcion"></div></td>
                 </tr>
                 <tr>
                     <td>&nbsp;</td>
                     <td>
-                        <input type="button" value="Emitir" onclick="xajax_emitir(xajax.getFormValues('formulario'));return false;" />
-                        <input type="button" value="Cancelar" name="btnCancelar" onclick="xajax_cancelar('requerimientos_vis.php');" />
+                        <input type="button" value="Aprobar" onclick="xajax_aprobar(xajax.getFormValues('formulario'));return false;" />
+                        <input type="button" value="Anular" onclick="xajax_anular(xajax.getFormValues('formulario'));return false;" />
+                        <input type="button" value="Cancelar" name="btnCancelar" onclick="xajax_cancelar('requerimientos_vis_band_coor.php?id=16074351');" />
                     </td>
                 </tr>
             </table>
