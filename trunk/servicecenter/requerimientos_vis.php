@@ -29,6 +29,16 @@ else {
     </head>
     <body onload="xajax_init(<?php echo $pagina;?>,<?php echo $inicio;?>);">
         <div id="datosPaginacion"></div>
+        <div align="right">Filtrar: <select name="cmbEstado" id="cmbEstado" onchange="xajax_filtrar(<?php echo $pagina;?>,<?php echo $inicio;?>,document.getElementById('cmbEstado').value);">
+                <option value="todos">Requerimientos...</option>
+                <option value="pendiente">Requerimientos Pendientes</option>
+                <option value="aprobado">Requerimientos Aprobados</option>
+                <option value="anulado">Requerimientos Anulados</option>
+                <option value="asignado">Requerimientos Asignados</option>
+                <option value="resuelto">Requerimientos Resueltos</option>
+                <option value="cerrado">Requerimientos Cerrados</option>
+            </select>
+        </div>
         <div align="right">Buscar: <input type="text" name="txtIduscar" id="txtIdBuscar" /><input type="button" value="..." name="btnBuscar" id="btnBuscar" onclick="xajax_buscarID(document.getElementById('txtIdBuscar').value);"/></div>
         <div id="listadoRequerimientos">
             <table class="tabla">
