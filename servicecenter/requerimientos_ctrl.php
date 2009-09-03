@@ -16,8 +16,10 @@ $xajax->registerFunction(XAJAX_FUNCTION, "anhiadir");
 $xajax->register(XAJAX_FUNCTION, "buscarID");
 $xajax->register(XAJAX_FUNCTION, "initVer");
 $xajax->register(XAJAX_FUNCTION, "initBandejaCoordinador");
+$xajax->register(XAJAX_FUNCTION, "filtrar");
 $xajax->register(XAJAX_FUNCTION, "aprobar");
 $xajax->register(XAJAX_FUNCTION, "anular");
+
 
 // Inicializar vista
 function init($pagina, $inicio){
@@ -394,6 +396,34 @@ function initBandejaCoordinador($pag, $ini, $id){
     return $objResp;
 }
 
+function filtrar($pag, $ini, $arg){
+    $objResp = new xajaxResponse();
+
+    $objResp->alert($arg);
+
+    $req = new Requerimiento();
+
+    $r = $req->filtrar($pag, $ini, $arg);
+
+    if ($r == -1){
+        $objResp->alert("Error en la conexión!\nImposible listar los requerimientos.");
+    }else if ($r == 0){
+        $objResp->alert("Error en la consulta!\nImposible listar los requerimientos.");
+    }else{
+        $lst = $req->getLista();
+        if ($lst == null){
+            $lst = "<tr><td><b>&nbsp;ID&nbsp;</b></td><td><b>&nbsp;Fecha&nbsp;</b></td><td><b>&nbsp;Servicio&nbsp;</b></td><td><b>&nbsp;Personal&nbsp;</b></td><td><b>&nbsp;Area&nbsp;</b></td><td><b>&nbsp;Coordinaci&oacute;n&nbsp;</b></td><td><b>&nbsp;Estado&nbsp;</b></td></tr></table><p>";
+            $lst .= "No existen requerimientos registrados a&uacute;n!";
+            $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
+        }else{
+            $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
+            $objResp->assign("datosPaginacion", "innerHTML", $req->getDatosPag());
+            $objResp->assign("paginacion", "innerHTML", $req->getPaginacion());
+        }
+    }
+    return $objResp;
+}
+
 function aprobar($datos){
     $objResp = new xajaxResponse();
 
@@ -428,7 +458,7 @@ function aprobar($datos){
             $mensaje .= "<u>Solicitado por:</u>".$req->getNomP()."<br />";
             $mensaje .= "Para hacer seguimiento del mismo puede acceder al sistema de soporte haciendo click aqu&iacute;: <a href=\"http://".$_SERVER['HTTP_HOST']."/servicecenter/\">servicecenter</a>";
 
-            $r = mail("a.kastro@gmail.com",$asunto,$mensaje,$cabeceras);
+            $r = mail($req->getCorreoSU(),$asunto,$mensaje,$cabeceras);
 
             if ($r){
                 $objResp->alert("Requerimiento aprobado con éxito!");
@@ -436,6 +466,25 @@ function aprobar($datos){
                 $objResp->alert("Incorrecto!");
             }
         }
+    }
+    return $objResp;
+}
+
+function anular($datos){
+    $objResp = new xajaxResponse();
+
+    $objResp->alert($datos["txtId"]);
+
+    $req = new Requerimiento($datos["txtId"]);
+
+    $r = $req->anular();
+
+    if ($r == -1){
+        $objResp->alert("Error en la conexión\nImposible anular requerimiento.");
+    }else if($r == 0){
+        $objResp->alert("Error en la consulta\nImposible anular requerimiento.");
+    }else{
+            $objResp->alert("Requerimiento anulado con éxito!");
     }
     return $objResp;
 }

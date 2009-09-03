@@ -1,5 +1,5 @@
 <!--
-Vista para controlar los niveles que se pueden crear dentro de la bd para el personal
+
 @author vincenzo
 -->
 <?php
