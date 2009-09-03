@@ -49,7 +49,7 @@ function guardar($datos){
         return $objResp;
     }else{
         if ($datos["txtClave1"]==$datos["txtClave2"]){
-            $pers = new Personal($datos["txtCedula"], $datos["txtNombre"], $datos["txtApellido"], $datos["txtMail"],  $datos["txtTelf"], $datos["cmbNivel"], $datos["cmbAreas"], $datos["txtClave1"]);
+            $pers = new Personal($datos["txtId"], $datos["txtNombre"], $datos["txtApellido"], $datos["txtMail"],  $datos["txtTelf"], $datos["cmbNivel"], $datos["cmbAreas"], $datos["txtClave1"]);
 
             $r = $pers->guardar();
 

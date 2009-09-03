@@ -42,6 +42,8 @@ class Requerimiento {
     var $idCoord;
     var $paginacion;
     var $correoSU;
+    var $ingenieros;
+    var $correoAN;
 
     function __construct($id=1, $fecha=null, $id_servicio=null, $descripcion=null, $fecha_ap=null, $fecha_as=null, $fecha_in=null, $fecha_fi=null, $id_equipo=null, $diagnostico=null, $solucion=null, $documentacion=null, $id_personal=null, $est=null, $lst=null, $mailC=null, $nomC=null, $idC=null) {
         $this->id = $id;
@@ -272,6 +274,22 @@ class Requerimiento {
         return $this->correoSU;
     }
 
+    public function setIngenieros($arg){
+        $this->ingenieros = $arg;
+    }
+
+    public function getIngenieros(){
+        return $this->ingenieros;
+    }
+
+    public function setCorreoAN($arg){
+        $this->correoAN = $arg;
+    }
+
+    public function getCorreoAN(){
+        return $this->correoAN;
+    }
+
     public function listar($pagina, $inicio){
         //miro a ver el número total de campos que hay en la tabla con esa búsqueda
         $consulta = "SELECT * FROM requerimientos ORDER BY cast(id as integer) ASC";
@@ -326,7 +344,10 @@ class Requerimiento {
                     $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arrA[1]."'";
                     $rC = pg_query($consulta);
                     $arrC = pg_fetch_row($rC, 0);
-                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_edit.php?id=".$arr[0]."\">Editar</a>&nbsp;<a href=\"requerimientos_vis_ver.php?id=".$arr[0]."\">Ver</a></td></tr>";
+                    if ($arr[14]<>"aprobado")
+                        $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ver.php?id=".$arr[0]."\">Ver</a></td></tr>";
+                    else
+                        $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_asig.php?id=".$arr[0]."\">Asignar</a>&nbsp;<a href=\"requerimientos_vis_ver.php?id=".$arr[0]."\">Ver</a></td></tr>";
                     $i++;
                 }
                 $ls .= "</table>";
@@ -835,7 +856,10 @@ class Requerimiento {
                         $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arrA[1]."'";
                         $rC = pg_query($consulta);
                         $arrC = pg_fetch_row($rC, 0);
-                        $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_edit.php?id=".$arr[0]."\">Editar</a>&nbsp;<a href=\"requerimientos_vis_ver.php?id=".$arr[0]."\">Ver</a></td></tr>";
+                        if ($arr[14]<>"aprobado")
+                            $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ver.php?id=".$arr[0]."\">Ver</a></td></tr>";
+                        else
+                            $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_asig.php?id=".$arr[0]."\">Asignar</a>&nbsp;<a href=\"requerimientos_vis_ver.php?id=".$arr[0]."\">Ver</a></td></tr>";
                         $i++;
                     }
                     $ls .= "</table>";
@@ -846,6 +870,81 @@ class Requerimiento {
                 }
             }
             return 1; // Se ejecuto con exito
+        }
+    }
+
+    public function ingenieros(){
+        $consulta = "SELECT id, nombre, apellido FROM personal WHERE id_nivel='2' and estado='activo' ORDER BY CAST(id AS INTEGER) ASC";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Falló la conexión
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Falló la consulta
+        }
+
+        $this->ingenieros = "<select name=\"cmbIngenieros\" id=\"cmbIngenieros\">";
+        $i = 0;
+        while ($i < pg_numrows($resultado)){
+            $arr = pg_fetch_row($resultado, $i);
+            $this->ingenieros .= "<option value=".$arr[0].">".$arr[1]." ".$arr[2]."</option>";
+            $i++;
+        }
+
+        $this->ingenieros .= "</select>";
+        pg_FreeResult($resultado);
+        $conec->cerrarConexion();
+        return 1;
+    }
+
+    public function asignar(){
+        $consulta = "UPDATE requerimientos SET fecha_asignacion=now(), estado='asignado' WHERE id='".$this->id."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1; // Error en la conexion!
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Fallo la consulta
+        }else{
+            return 1; // Se ejecuto con exito
+        }
+    }
+
+    public function correoAnalista($arg){
+        // Selecciono el área a la cual pertenece el personal solicitante del requerimiento
+        $consulta = "SELECT correo FROM personal WHERE id='".$arg."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Error en la conexion
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0;// Error en la consulta
+        }else{
+            if (pg_numrows($resultado) > 0){
+                $this->correoAN = pg_fetch_row($resultado, 0);
+            }
+            return 1; //Se ejecuto con éxito
         }
     }
 }
