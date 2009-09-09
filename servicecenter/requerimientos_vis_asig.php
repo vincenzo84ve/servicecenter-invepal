@@ -12,7 +12,7 @@ $id = $_GET['id'];
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>ServiceCenter - Area->A&ntilde;adir</title>
+        <title>ServiceCenter</title>
         <?php $xajax->printJavascript(); ?>
     </head>
     <body onload="xajax_initAsig(<?php echo $id; ?>);">
