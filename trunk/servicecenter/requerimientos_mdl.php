@@ -44,6 +44,7 @@ class Requerimiento {
     var $correoSU;
     var $ingenieros;
     var $correoAN;
+    var $id_ing;
 
     function __construct($id=1, $fecha=null, $id_servicio=null, $descripcion=null, $fecha_ap=null, $fecha_as=null, $fecha_in=null, $fecha_fi=null, $id_equipo=null, $diagnostico=null, $solucion=null, $documentacion=null, $id_personal=null, $est=null, $lst=null, $mailC=null, $nomC=null, $idC=null) {
         $this->id = $id;
@@ -288,6 +289,14 @@ class Requerimiento {
 
     public function getCorreoAN(){
         return $this->correoAN;
+    }
+
+    public function setIdIng($arg){
+        $this->id_ing = $arg;
+    }
+
+    public function getIdIng(){
+        return $this->id_ing;
     }
 
     public function listar($pagina, $inicio){
@@ -905,7 +914,7 @@ class Requerimiento {
     }
 
     public function asignar(){
-        $consulta = "UPDATE requerimientos SET fecha_asignacion=now(), estado='asignado' WHERE id='".$this->id."'";
+        $consulta = "UPDATE requerimientos SET fecha_asignacion=now(), estado='asignado' WHERE id='".$this->id."', id_ingeniero='".$this->id_ing."'";
 
         $conec = new Conexion();
 

@@ -586,6 +586,8 @@ function asignar($datos){
 
     $req = new Requerimiento($datos["txtId"]);
 
+    $req->setIdIng($datos["cmbIngenieros"]);
+
     $r = $req->asignar();
 
     if ($r == -1){
