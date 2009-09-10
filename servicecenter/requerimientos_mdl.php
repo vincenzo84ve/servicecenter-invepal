@@ -450,7 +450,7 @@ class Requerimiento {
     }
 
     function servicios(){
-        $consulta = "SELECT * FROM servicios ORDER BY id ASC";
+        $consulta = "SELECT * FROM servicios ORDER BY cast(id as integer) ASC";
 
         $conec = new Conexion();
 
@@ -481,7 +481,7 @@ class Requerimiento {
     }
 
     function equipos(){
-        $consulta = "SELECT * FROM equipos ORDER BY id ASC";
+        $consulta = "SELECT * FROM equipos ORDER BY cast(id as integer) ASC";
 
         $conec = new Conexion();
 

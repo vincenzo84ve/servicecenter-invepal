@@ -54,6 +54,16 @@ function init($pagina, $inicio){
 function emitir($datos){
     $objResp = new xajaxResponse();
 
+    # Variables del archivo
+    $type = $_FILES["archivo"]["type"];
+    $tmp_name = $_FILES["archivo"]["tmp_name"];
+    $size = $_FILES["archivo"]["size"];
+    $nombre = basename($_FILES["archivo"]["name"]);
+    # Contenido del archivo
+    $fp = fopen($tmp_name, "rb");
+    $buffer = fread($fp, filesize($tmp_name));
+    fclose($fp);
+
     $req = new Requerimiento($datos["txtId"], $datos["txtFecha"], $datos["cmbServicios"], $datos["txtDescripcion"], "", "", "", "", $datos["cmbEquipos"], "", "", "", $datos["txtIdP"], "pendiente", "", "", "", $datos["txtIdCoordinacion"]);
 
     $r = $req->guardar();
@@ -99,7 +109,7 @@ function emitir($datos){
             }
         }
         $objResp->alert("Guardado con éxito!");
-        $objResp->redirect("requerimientos_vis.php");
+//        $objResp->redirect("requerimientos_vis.php");
     }
     return $objResp;
 }
