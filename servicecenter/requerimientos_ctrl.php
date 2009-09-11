@@ -11,8 +11,8 @@ $xajax->register(XAJAX_FUNCTION, "cancelar");
 $xajax->register(XAJAX_FUNCTION, "init");
 $xajax->register(XAJAX_FUNCTION, "initAdd");
 $xajax->register(XAJAX_FUNCTION, "initEdit");
-$xajax->registerFunction(XAJAX_FUNCTION, "cancelar");
-$xajax->registerFunction(XAJAX_FUNCTION, "anhiadir");
+$xajax->register(XAJAX_FUNCTION, "cancelar");
+$xajax->register(XAJAX_FUNCTION, "anhiadir");
 $xajax->register(XAJAX_FUNCTION, "buscarID");
 $xajax->register(XAJAX_FUNCTION, "initVer");
 $xajax->register(XAJAX_FUNCTION, "initBandejaCoordinador");
@@ -21,6 +21,11 @@ $xajax->register(XAJAX_FUNCTION, "aprobar");
 $xajax->register(XAJAX_FUNCTION, "anular");
 $xajax->register(XAJAX_FUNCTION, "initAsig");
 $xajax->register(XAJAX_FUNCTION, "asignar");
+$xajax->register(XAJAX_FUNCTION, "elimAnexo");
+$xajax->register(XAJAX_FUNCTION, "confirmElimAnexo");
+$xajax->register(XAJAX_FUNCTION, "initBandejaIngeniero");
+$xajax->register(XAJAX_FUNCTION, "initIng");
+$xajax->register(XAJAX_FUNCTION, "descargarAnexo");
 
 // Inicializar vista
 function init($pagina, $inicio){
@@ -53,17 +58,7 @@ function init($pagina, $inicio){
 // Funcion para guardar los datos
 function emitir($datos){
     $objResp = new xajaxResponse();
-
-    # Variables del archivo
-    $type = $_FILES["archivo"]["type"];
-    $tmp_name = $_FILES["archivo"]["tmp_name"];
-    $size = $_FILES["archivo"]["size"];
-    $nombre = basename($_FILES["archivo"]["name"]);
-    # Contenido del archivo
-    $fp = fopen($tmp_name, "rb");
-    $buffer = fread($fp, filesize($tmp_name));
-    fclose($fp);
-
+    
     $req = new Requerimiento($datos["txtId"], $datos["txtFecha"], $datos["cmbServicios"], $datos["txtDescripcion"], "", "", "", "", $datos["cmbEquipos"], "", "", "", $datos["txtIdP"], "pendiente", "", "", "", $datos["txtIdCoordinacion"]);
 
     $r = $req->guardar();
@@ -75,7 +70,7 @@ function emitir($datos){
     }else{
         //Envio el correo al coordinador general
         $r = $req->correoCordinador();
-        
+
         if ($r == -1){
             $objResp->alert("Error en la conexión!");
         }else if($r == 0){
@@ -188,6 +183,10 @@ function initAdd($arg){
 
         $objResp->assign("id", "innerHTML", $textBox);
         $objResp->assign("txtId", "value", $req->getId());
+
+        $textBox = "<input type=\"hidden\" name=\"txtIdReq\" id=\"txtIdReq\"  size=\"6\" />";
+        $objResp->assign("idRequerimiento", "innerHTML", $textBox);
+        $objResp->assign("txtIdReq", "value", $req->getId());
     }
 
     $r = $req->Datos($arg);
@@ -241,6 +240,17 @@ function initAdd($arg){
     }else{// si realizo la consulta con éxito
         // inicializo la vista
         $objResp->assign("lblEquipos", "innerHTML", $req->getEquipos());
+    }
+
+    $r = $req->listarAnexos();
+    
+     if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblAnexos", "innerHTML", $req->getLstAnexos());
     }
 
     return $objResp;
@@ -375,6 +385,17 @@ function initVer($arg){
     }else{// si realizo la consulta con éxito
         // inicializo la vista
         $objResp->assign("lblDescripcion", "innerHTML", $req->getDescripcion());
+    }
+
+    $r = $req->listarAnexosO();
+
+     if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblAnexos", "innerHTML", $req->getLstAnexos());
     }
 
     return $objResp;
@@ -632,6 +653,192 @@ function asignar($datos){
             }
         }
     }
+    $objResp->redirect("requerimientos_vis.php");
+
+    return $objResp;
+}
+
+function confirmElimAnexo($arg1, $arg2){
+    $objResp = new xajaxResponse();
+
+    $arr = array($arg1, $arg2);
+
+    $objResp->confirmCommands(1, "Esta seguro?");
+    $objResp->call("xajax_elimAnexo", $arr);
+
+    return $objResp;
+}
+
+function elimAnexo($arg){
+    $objResp = new xajaxResponse();
+
+    $objResp->alert($arg[0]);
+
+    $req = new Requerimiento();
+
+    $r = $req->eliminarAnexo($arg[0]);
+
+    if ($r == -1){
+        $objResp->alert("Error en la conexión!");
+    }else if($r == 0){
+        $objResp->alert("Error en la consulta!");
+    }else if ($r == 1){
+        
+//        $objResp->call('xajax_initAdd', $arg2);
+        $req->setId($arg[1]);
+        $r = $req->listarAnexos();
+
+        if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+        }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+        }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblAnexos", "innerHTML", $req->getLstAnexos());
+        }
+    }
+
+    return $objResp;
+}
+
+function initBandejaIngeniero($pag, $ini, $id){
+    $objResp = new xajaxResponse();
+
+    $req = new Requerimiento();
+
+    $r = $req->listarBandejaIngeniero($pag, $ini, $id);
+
+    if ($r == -1){
+        $objResp->alert("Error en la conexión!\nImposible listar los requerimientos.");
+    }else if ($r == 0){
+        $objResp->alert("Error en la consulta!\nImposible listar los requerimientos.");
+    }else{
+        $lst = $req->getLista();
+        if ($lst == null){
+            $lst = "<tr><td><b>&nbsp;ID&nbsp;</b></td><td><b>&nbsp;Fecha&nbsp;</b></td><td><b>&nbsp;Servicio&nbsp;</b></td><td><b>&nbsp;Personal&nbsp;</b></td><td><b>&nbsp;Area&nbsp;</b></td><td><b>&nbsp;Coordinaci&oacute;n&nbsp;</b></td><td><b>&nbsp;Estado&nbsp;</b></td></tr></table><p>";
+            $lst .= "No existen requerimientos registrados a&uacute;n!";
+            $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
+        }else{
+            $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
+            $objResp->assign("datosPaginacion", "innerHTML", $req->getDatosPag());
+            $objResp->assign("paginacion", "innerHTML", $req->getPaginacion());
+        }
+    }
+
+    return $objResp;
+}
+
+function initIng($arg){
+    $objResp = new xajaxResponse();
+
+    $req = new Requerimiento($arg);
+
+    $r = $req->detalles($arg);
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible generar detalles de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible generar detalles de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista para añadir nuevas areas
+        $textBox = "<input type=\"text\" name=\"txtId\" id=\"txtId\"  size=\"6\" readonly=\"readonly\" />";
+
+        $objResp->assign("id", "innerHTML", $textBox);
+        $objResp->assign("txtId", "value", $req->getId());
+    }
+
+    $r = $req->Datos($req->getId_personal());
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $text ="<input type=\"text\" name=\"txtIdP\" id=\"txtIdP\"  size=\"6\" readonly=\"readonly\" />";
+        $objResp->assign("lblID", "innerHTML", $text);
+        $objResp->assign("txtIdP", "value", $req->getId_personal());
+        $text ="<input type=\"text\" name=\"txtNomP\" id=\"txtNomP\"  size=\"22\" readonly=\"readonly\" />";
+        $objResp->assign("lblNombre", "innerHTML", $text);
+        $objResp->assign("txtNomP", "value", $req->getNomP());
+        $text ="<input type=\"text\" name=\"txtArea\" id=\"txtArea\"  size=\"22\" readonly=\"readonly\" />";
+        $objResp->assign("lblArea", "innerHTML", $text);
+        $objResp->assign("txtArea", "value", $req->getArea());
+        $textID ="<input type=\"text\" name=\"txtCoordinacion\" id=\"txtCoordinacion\"  size=\"22\" readonly=\"readonly\" />";
+        $objResp->assign("lblCoordinacion", "innerHTML", $textID);
+        $objResp->assign("txtCoordinacion", "value", $req->getCoordinacion());
+    }
+
+    $text = "<input type=\"text\" name=\"txtFecha\" id=\"txtFecha\"  size=\"16\" readonly=\"readonly\" />";
+    $objResp->assign("lblFecha", "innerHTML", $text);
+    $ahora = getdate();
+    $fecha = $ahora["mday"] . "/" . $ahora["mon"] . "/" . $ahora["year"]." ".$ahora["hours"] . ":" . $ahora["minutes"] . ":" . $ahora["seconds"];
+    $objResp->assign("txtFecha", "value", $fecha);
+
+    $r = $req->servicios();
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblServicios", "innerHTML", $req->getServicios());
+    }
+
+    $r = $req->equipos();
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblEquipos", "innerHTML", $req->getEquipos());
+    }
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblDescripcion", "innerHTML", $req->getDescripcion());
+    }
+
+    $r = $req->listarAnexos();
+
+     if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblAnexos", "innerHTML", $req->getLstAnexos());
+    }
+
+    $idp = $req->getIdIng();
+
+    $objResp->assign("btnCancelar", "innerHTML", "<input type=\"button\" value=\"Cancelar\" name=\"btnCancelar\" onclick=\"xajax_cancelar('requerimientos_vis_band_ing.php?id=$idp');\" />");
+
+    return $objResp;
+}
+
+function descargarAnexo($arg){
+    $objResp = new xajaxResponse();
+
+    $objResp->alert($arg);
+
+    $req = new Requerimiento();
+
+    $r = $req->descargarAnexo($arg);
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }
+
     return $objResp;
 }
 
