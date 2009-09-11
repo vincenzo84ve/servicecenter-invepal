@@ -45,6 +45,7 @@ class Requerimiento {
     var $ingenieros;
     var $correoAN;
     var $id_ing;
+    var $lstAnexos;
 
     function __construct($id=1, $fecha=null, $id_servicio=null, $descripcion=null, $fecha_ap=null, $fecha_as=null, $fecha_in=null, $fecha_fi=null, $id_equipo=null, $diagnostico=null, $solucion=null, $documentacion=null, $id_personal=null, $est=null, $lst=null, $mailC=null, $nomC=null, $idC=null) {
         $this->id = $id;
@@ -65,6 +66,7 @@ class Requerimiento {
         $this->mailCoordinador = $mailC;
         $this->nomCoordinador = $nomC;
         $this->idCoord = $idC;
+        $this->lstAnexos = null;
     }
 
     public function getId() {
@@ -297,6 +299,14 @@ class Requerimiento {
 
     public function getIdIng(){
         return $this->id_ing;
+    }
+
+    public function setLstAnexos($arg){
+        $this->lstAnexos = $arg;
+    }
+
+    public function getLstAnexos(){
+        return $this->lstAnexos;
     }
 
     public function listar($pagina, $inicio){
@@ -674,6 +684,7 @@ class Requerimiento {
                 $arr = pg_fetch_row ($resultado, $i);
                 $this->descripcion = $arr[3];
                 $this->id_personal = $arr[13];
+                $this->id_ing = $arr[16];
                 
                 pg_FreeResult($resultado);
                 $conec->cerrarConexion();
@@ -914,7 +925,7 @@ class Requerimiento {
     }
 
     public function asignar(){
-        $consulta = "UPDATE requerimientos SET fecha_asignacion=now(), estado='asignado' WHERE id='".$this->id."', id_ingeniero='".$this->id_ing."'";
+        $consulta = "UPDATE requerimientos SET fecha_asignacion=now(), estado='asignado', id_ingeniero='".$this->id_ing."' WHERE id='".$this->id."'";
 
         $conec = new Conexion();
 
@@ -955,6 +966,174 @@ class Requerimiento {
             }
             return 1; //Se ejecuto con éxito
         }
+    }
+
+    public function listarAnexos(){
+        # Lista los archivos subidos a la base de datos
+        $consulta = "select id, nombre, coalesce(archivo_oid,-1) as archivo_oid from anexo_requerimientos where id_requerimiento='".$this->id."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Error en la conexion
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0;// Error en la consulta
+        }else{
+            if (pg_numrows($resultado) > 0){
+                $this->lstAnexos = "<table>";
+                $i = 0;
+                while ($row=pg_fetch_array($resultado)){
+                    $this->lstAnexos .= "<tr>";
+                    $this->lstAnexos .= "<td>$row[id]</td>";
+                    $this->lstAnexos .= "<td>$row[nombre]</td>";
+                    $this->lstAnexos .= "<td><input type=\"button\" name=\"btnIDA$i\" id=\"btnIDA$i\" value=\"Eliminar\" onclick=\"xajax_confirmElimAnexo($row[id], $this->id);return false;\" /></td>";
+                    $this->lstAnexos .= "</tr>";
+                    $i++;
+                }
+                $this->lstAnexos .= "</table>";
+            }
+        }
+        return 1;// Se ejecutó con éxito
+    }
+    
+    public function listarAnexosO(){
+        # Lista los archivos subidos a la base de datos
+        $consulta = "select id, nombre, coalesce(archivo_oid,-1) as archivo_oid from anexo_requerimientos where id_requerimiento='".$this->id."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Error en la conexion
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0;// Error en la consulta
+        }else{
+            if (pg_numrows($resultado) > 0){
+                $this->lstAnexos = "<table>";
+                $i = 0;
+                while ($row=pg_fetch_array($resultado)){
+                    $this->lstAnexos .= "<tr>";
+                    $this->lstAnexos .= "<td>$row[id]</td>";
+                    $this->lstAnexos .= "<td>$row[nombre]</td>";
+                    $this->lstAnexos .= "<td><a href=\"descargarAnexo.php?id=$row[id]\" title=\"Bajar el archivo\">Descargar</a></td>";
+                    $this->lstAnexos .= "</tr>";
+                    $i++;
+                }
+                $this->lstAnexos .= "</table>";
+            }
+        }
+        return 1;// Se ejecutó con éxito
+    }
+
+    public function eliminarAnexo($arg){
+        $consulta = "DELETE FROM anexo_requerimientos WHERE id='".$arg."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Error en la conexion
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0;// Error en la consulta
+        }else{
+            // Se ejecuto con éxito
+            return 1;
+        }
+    }
+
+    public function listarBandejaIngeniero($pagina, $inicio, $idC){
+        //miro a ver el número total de campos que hay en la tabla con esa búsqueda
+        $consulta = "SELECT * FROM requerimientos ORDER BY cast(id as integer) ASC";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1; // Error en la conexion!
+        }
+
+        $resultado = pg_query($consulta);
+
+        $numR = pg_numrows($resultado);
+
+        //Limito la busqueda
+        $TAMANO_PAGINA = 10;
+
+
+        //calculo el total de páginas
+        $total_paginas = ceil($numR / $TAMANO_PAGINA);
+
+        //pongo el número de registros total, el tamaño de página y la página que se muestra
+        $this->datosPag = "N&uacute;mero de registros encontrados: " . $numR . "<br>";
+        $this->datosPag .= "Se muestran p&aacute;ginas de " . $TAMANO_PAGINA . " registros cada una<br>";
+        $this->datosPag .= "Mostrando la p&aacute;gina " . $pagina . " de " . $total_paginas . "<p>";
+
+        $consulta = "SELECT * FROM requerimientos WHERE id_ingeniero='".$idC."' and estado='asignado' ORDER BY CAST(id AS INTEGER) OFFSET '".$inicio."' LIMIT '".$TAMANO_PAGINA."'";
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Fallo la consulta
+        }else{
+            $num = pg_numrows($resultado);
+            if ($num > 0){
+                $i = 0;
+                $ls = "<table>";
+                $ls .= "<tr><td><b>ID</b></td><td><b>Fecha</b></td><td><b>Servicio</b></td><td><b>Personal</b></td><td><b>Area</b></td><td><b>Coordinaci&oacute;n</b></td><td><b>Estado</b></td></tr>";
+                while($i < $num){
+                    $arr = pg_fetch_row ($resultado, $i);
+                    $consulta = "SELECT descripcion FROM servicios WHERE id='".$arr[2]."'";
+                    $rS = pg_query($consulta);
+                    $arrS = pg_fetch_row ($rS, 0);
+                    $consulta = "SELECT nombre, apellido, id_area FROM personal WHERE id='".$arr[13]."'";
+                    $rP = pg_query($consulta);
+                    $arrP = pg_fetch_row($rP, 0);
+                    $consulta = "SELECT nombre, id_coordinacion FROM areas WHERE id='".$arrP[2]."'";
+                    $rA = pg_query($consulta);
+                    $arrA = pg_fetch_row($rA, 0);
+                    $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arrA[1]."'";
+                    $rC = pg_query($consulta);
+                    $arrC = pg_fetch_row($rC, 0);
+                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ing_ini.php?id=".$arr[0]."\">Ver</a></td></tr>";
+                    $i++;
+                }
+                $ls .= "</table>";
+                $this->html_lst = $ls;
+                unset($ls);
+                pg_FreeResult($resultado);
+                $conec->cerrarConexion();
+
+                //muestro los distintos índices de las páginas, si es que hay varias páginas
+                if ($total_paginas > 1){
+                    for ($i=1;$i<=$total_paginas;$i++){
+                       if ($pagina == $i)
+                          //si muestro el índice de la página actual, no coloco enlace
+                          $this->paginacion .= $pagina. " ";
+                       else
+                          //si el índice no corresponde con la página mostrada actualmente, coloco el enlace para ir a esa página
+                          $this->paginacion .= "<a href='requerimientos_vis_band_ing.php?id=".$idC."&pagina=".$i."'>".$i."</a> ";
+                    }
+                }
+            }
+        }
+        return 1;// Se ejecuto satisfactoriamente
     }
 }
 ?>

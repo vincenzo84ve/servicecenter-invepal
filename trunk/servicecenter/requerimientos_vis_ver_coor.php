@@ -57,5 +57,6 @@ $id = $_GET['id'];
                 </tr>
             </table>
         </form>
+        <div id="lblAnexos"></div>
     </body>
 </html>
