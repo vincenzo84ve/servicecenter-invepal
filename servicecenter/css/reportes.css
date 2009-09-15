@@ -1,0 +1,39 @@
+input.button{
+height: 20px;
+color: #333333;
+font-size: 12px;
+font-weight:bold;
+padding-left: 8px;
+padding-right: 8px;
+background-image: url(images/inc_css/bg.gif);
+background-repeat: repeat-x;
+background-attachment: scroll;
+background-position: 0% 0%;
+border-top-width: 1px;
+border-right-width-value: 1px;
+border-right-width-ltr-source: physical;
+border-right-width-rtl-source: physical;
+border-bottom-width: 1px;
+border-left-width-value: 1px;
+border-left-width-ltr-source: physical;
+border-left-width-rtl-source: physical;
+border-top-style: solid;
+border-right-style-value: solid;
+border-right-style-ltr-source: physical;
+border-right-style-rtl-source: physical;
+border-bottom-style: solid;
+border-left-style-value: solid;
+border-left-style-ltr-source: physical;
+border-left-style-rtl-source: physical;
+border-top-color: #a4a4a4;
+border-right-color-value: #a4a4a4;
+border-right-color-ltr-source: physical;
+border-right-color-rtl-source: physical;
+border-bottom-color: #a4a4a4;
+border-left-color-value: #a4a4a4;
+border-left-color-ltr-source: physical;
+border-left-color-rtl-source: physical;
+}
+input.button:hover{
+color: black;
+}

@@ -1,0 +1,486 @@
+/* CSS Document */
+body{
+	font: 0.7em/1.0em "Tahoma", sans-serif;
+	color: #19445C;
+	margin: 0;
+	padding: 0;
+	line-height: 1.5em;
+
+	/*background: #E6EBF2; Azulito
+	background:#f1f5fb ; // Color de SAID - CArabobo
+	*/
+	/*background:url(images/fondo.jpg)*/
+}
+
+
+b{font-size: 110%;}
+
+label{
+	font-weight:bold;
+}
+
+em{color: red;}
+
+.alineacioncent{
+text-align: center;
+}
+
+.alineacionder{
+text-align:right;
+}
+
+.alineacionizq{
+  text-align:left;
+}
+
+#topsection{
+background: #FFFFFF;
+height: 81px; /*Height of top section*/
+}
+
+#topsection_top{
+background:#FFFFFF;
+height: 54px; /*Height of top section*/
+
+}
+.maincontainer{
+/*height: 40em;*/
+}
+#contentwrapper{
+float: left;
+width: 98%;
+/*
+Ancho Fiijado para la presentaciï¿½n del Menu Grafico Principal
+*/
+}
+
+#contentcolumn{
+margin-left: 25%; /*Set left margin to LeftColumnWidth*/
+}
+
+#leftcolumn{
+float: left;
+width: 200px; /*Width of left column*/
+margin-left: -100%;
+padding-top: 2em;
+padding-left:0px;
+background: #f4f4f4;
+}
+
+.leftcol{
+	width: 20%;
+}
+/*#footer{
+clear: left;
+width: 100%;
+background:url(../images/bottom.gif) repeat-x;
+height: 33px;
+text-align: center;
+color:#F2F2F2;
+}*/
+
+#footer{
+width: 50%;
+text-align: center;
+color: #8d8383;
+padding-left:200px;
+}
+#footer a{
+color: #FFFF80;
+}
+
+#footer_cont{
+text-align: center;
+padding: 5px 0;
+}
+
+.innertube{
+/*margin: 10px; /*Margins for inner DIV inside each column (to provide padding)*/
+margin-top: 0;
+background:url(../images/line.gif) repeat-x ;
+height:2px;
+/*
+height:33px;
+Desactivado
+*/
+color:#F2F2F2;
+}
+.innertube1{
+margin: 0;
+background-color:#FFFFFF;
+/*background:url(../images/top1.gif) repeat-x ;*/
+height:28px;
+}
+.innertube2{
+margin-top: 0;
+background:url(../images/menu2.gif) repeat-x ;
+height:23px;
+vertical-align:middle;
+color: #DEEDF4;
+}
+
+/*=-=-=-=-= EStilo Tabla de Menu Modulos =-=-=-=-=-=-*/
+#tabla_modulos{
+ text-align:center;
+ margin-top:0;
+/* height:100%;*/
+height:50px;
+ width:100%;
+}
+
+#tabla_modulos td{
+ padding:5px 5px 10px 5px;
+ margin:10px;
+}
+
+.iconos_mod{
+ padding:0px 2px 0px 2px;
+ text-align:center;
+}
+
+/**********Titulo de Cada Modulo********************/
+.titulos_mod{
+ text-align:center;
+ margin-top:10%;
+ width:100%;
+ font-size:8pt;
+ font-weight: bold;
+ color:#8c2323;
+ /*color:#B64900;*/
+
+}
+/**************************************
+* LOGIN
+***************************************/
+#login{
+	border: 2px solid #FF0000;
+	width: 400px;
+	height: 400px;
+	background-color: transparent;
+	background-image: url(../images/splashTodo.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+/*Agregar un Candado a una esquina, un logotipo de algo q identifique a Invepal y las notas de confidencialidad del Siquel*/
+#loginInvepal{
+	width: 400px;
+	height: 400px;
+	background-color: transparent;
+	background-image: url(../images/splashTodo.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+/* Login y password */
+.tupla_acceso{
+	font-size:12px;
+	/*color: #e56e0d;*/
+     color: #FFFFFF;
+	font-weight: bolder;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	text-transform: capitalize;
+}
+
+#ubica_titulo{
+/*Usado para Alinear el Titulo a una mediida especifica, en base a las medidas #loginInvepal*/
+text-align:center;
+padding-top: 20px;
+ /*padding-left: 65px;*/
+}
+.titulo_login{
+  font-size:19px;
+  /*color: #e56e0d;*/
+  color: #990000;
+  font-weight: bold;
+}
+.titulo1_login{
+  font-size:14px;
+  color: #576871;
+  font-weight: bold;
+}
+
+#login_form{
+ padding-top: 30px;
+}
+#login_form td{
+  /*color: #373535;*/
+  font-size: 11px;
+  font-weight: bold;
+}
+
+/*=-=-=-=-= EStilo Metaforas=-=-=-=-=-=-*/
+#metaforma{
+/*color:#F2F2F2;*/
+float:right;
+}
+.innertube1 #metafora{
+color:#F2F2F2;
+float:right;
+width:11em;
+padding-top:5px;
+font-size: 11px;
+}
+
+
+#metafora a:link{
+TEXT-DECORATION: none;
+color:#F2F2F2;
+}
+
+#metafora a:visited{
+TEXT-DECORATION: none;
+color:#F2F2F2;
+}
+
+#metafora a:hover{
+TEXT-DECORATION: none;
+color:#19445C;
+}
+
+#metafora a:active{
+TEXT-DECORATION: none;
+color:#F2F2F2;
+}
+
+#metafora a:link{
+	text-decoration: none;
+	color: #F2F2F2;
+}
+
+#metafora a:visited{
+	text-decoration: none;
+	color: #F2F2F2;
+}
+
+#metafora a:hover{
+	text-decoration: none;
+	color: #19445C;
+}
+
+#metafora a:active{
+	text-decoration: none;
+	color: #F2F2F2;
+}
+
+
+/*=-=-=-=-= EStilo Fecha Hora =-=-=-=-=-=-*/
+#fecha_hora{
+color:#F2F2F2;
+color:#000000;
+text-align:right;
+vertical-align:middle;
+padding-top:7px;
+font-weight: bold;
+height:25px;
+}
+
+<<<<<<< .mine
+/*Formato de Presentación de la Fecha y Hora SAID-INVEPAL*/
+=======
+/*Formato de Presentaciï¿½n de la Fecha y Hora en ek SAID-INVEPAL*/
+>>>>>>> .r29
+#fecha_hora_invepal{
+color:#000000;
+vertical-align:middle;
+float: rigth;
+/*height:25px;
+padding-top:7px*/
+}
+
+/*=-=-=-=-= EStilo Nombre Usuario=-=-=-=-=-=-*/
+
+.usuario{
+	color:#CC0000;
+	float:right;
+	width:18em;
+	height:13px;
+	padding-top:5px;
+	font-weight:bold;
+	/*line-height: 0em;*/
+position: absolute;
+	left:80%;
+	text-align: right;
+	text-transform: capitalize;
+}
+
+.usuario2{
+	color:#CC0000;
+	font-weight:bold;
+	/*line-height: 0em;*/
+	text-transform: capitalize;
+}
+
+.usuario a{
+	color:#F2F2F2;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.usuario a:hover{
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.usuario a: linked{
+	text-decoration: none;
+}
+
+/*=-=-=-=-= EStilo Nombre Usuario=-=-=-=-=-=-*/
+#titulo{
+color: #FFFFFF;
+font-weight:bolder;
+text-align:center;
+font-size:12px;
+padding-top:5px
+}
+
+#titulo_index{
+color: #FF0000;
+font-weight:bolder;
+text-align:center;
+font-size:30px;
+}
+
+/*----------OTROS ESTILOS------------*/
+#p{
+   line-height: 200%;
+}
+
+p{
+   line-height: 200%;
+   font-size:12px;
+}
+.tabla_conf_p2{
+font-size: 11px;
+}
+
+.tabla_peq{
+font-size: 11px;
+
+}
+
+.tabla_agregar{
+font-size: 11px;
+
+}
+
+/*--------------ESTILO TABLA--------------*/
+table,td,div {
+  color            : #0c0303;
+  font-size        : 11px;
+  margin:0;
+
+}
+
+/*----------OTROS ESTILOS------------*/
+#introduction{
+font-family: verdana, arial, sans-serif, courrier;
+font-size: 12px;
+line-height: 200%;
+width:80px:
+}
+
+.title_said{
+font-family: verdana, arial, sans-serif, courrier;
+color: #ef1b1b;
+/*color: #4f658c;*/
+font-size:26px;
+font-weight: bold;
+}
+
+.titulo{
+color: #ef1b1b;
+/*color: #4f658c;*/
+font-size:14px;
+font-weight: bold;
+}
+
+.titulo2{
+color: #c00404;
+font-size:12px;
+font-weight: bold;
+}
+
+fieldset{
+border: 2px solid #CC0000;
+}
+
+configura{
+font-family: verdana, arial, sans-serif, courrier;
+color: #cc0000;
+font-size:14px;
+font-weight: bold;
+}
+
+/*
+Tamaï¿½o y Color de Letra usadas por el maquetador que acompaï¿½a el formulario
+*/
+legend{
+color: #000000;
+font-size:12px;
+font-weight: bold;
+}
+.obligatorio{
+color: #FFFFFF;
+font-weight:bolder
+/*color: #ee0817;*/
+}
+.color{
+color: #ee0817;
+}
+
+/*---------------------------------------------------*/
+#box{
+	width:50em;
+	height: 10em;
+	border: solid 1px #9b9b9b;
+	background-color: #fafcfc;
+	padding: 5px 5px 5px 5px;
+}
+#box p{
+	font-size: 12px;
+	font-family: "Trebuchet Ms";
+}
+#box_form{
+	border: solid 1px #9b9b9b;
+	background-color: #fafcfc;
+	padding: 5px 5px 5px 5px;
+}
+#box_form p{
+	font-size: 12px;
+	font-family: "Trebuchet Ms";
+}
+#fieldset{
+border: 1px solid #91bbd1;
+width: 80%;
+}
+
+/*
+Barra de Navegaciï¿½n UPPERCASE
+*/
+
+.barranavegacion{
+	/*color: #FFFFFF;*/
+	color: #000000;
+	text-decoration: none;
+	text-align:right;
+	font-size: 12px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.barranavegacion: visited{
+	color: #990000;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: bolder;
+	text-transform: uppercase;
+}
+
+.barranavegacion:hover{
+	color: #990000;
+	font-size: 12px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
