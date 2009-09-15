@@ -1,39 +1,10 @@
-<!--
-To change this template, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title></title>
-        <!--<style type="text/css">
-            divi {
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                position: fixed;
-                display: table
-            }
-            span {
-                display: table-cell;
-                vertical-align: middle
-            }
-
-            imgn {display: block; margin: 1em auto}
-        </style>-->
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <title>ServiceCenter - Invepal</title>
     </head>
     <body>
-        <table width="100%" height="100%">
-            <tr valign="middle">
-                    <td align="center"><img src="imagenes/soporte.png" width="200" height="199"></td>
-            </tr>
-        </table>
-
-        <!--<div id="divi"><span><img id="imgn" src="imagenes/soporte.png" alt="Sistema Centralizado de Soporte T&eacute;cnico." /></span></div>-->
-        <?php
-        // put your code here
-        ?>
+        <img src="imagenes/soporte.png"></img>
     </body>
 </html>
