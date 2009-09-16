@@ -11,11 +11,11 @@
                 <td width="960px" style="height:55px; background-image:url(imagenes/fondo_tope.png); background-repeat:repeat-x">
                     <div>
                         <table border="0" cellspacing="0" cellpadding="0">
-                        	<tr>
+                            <tr>
                             	<td align="left" valign="top" width="414px">
                                 	<img src="imagenes/gobierno_mct.png" />
                                 </td>
-                                <td width="428px">&nbsp;</td>
+                                <td width="428px"></td>
                                 <td align="right" valign="middle" width="68px">
                                 	<img src="imagenes/vzla_todos.png" />
                                 </td>
@@ -34,7 +34,7 @@
 
             <!-- Centro -->
             <tr>
-            	<td class="sombra_izq">&nbsp;</td>
+            	<td class="sombra_izq"></td>
                 <td colspan="3" width="980px" bgcolor="#ffffff">
                 	<!-- Banner -->
                     <div>

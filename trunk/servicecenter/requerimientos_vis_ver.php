@@ -48,6 +48,10 @@ $id = $_GET['id'];
                     <td colspan="3"><div id="lblDescripcion"></div></td>
                 </tr>
                 <tr>
+                    <td>Analista:</td>
+                    <td><div id="lblAnalista"></div></td>
+                </tr>
+                <tr>
                     <td>&nbsp;</td>
                     <td>
                         <input type="button" value="Emitir" onclick="xajax_emitir(xajax.getFormValues('formulario'));return false;" />

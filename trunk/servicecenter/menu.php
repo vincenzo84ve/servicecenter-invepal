@@ -7,8 +7,13 @@
         <link rel="stylesheet" type="text/css" href="css/estilo.css" />
     </head>
     <body>
-        <div style="width:184px">
+        <div style="width:184px; height:400px">
         <table border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td class="headerbar">
+                    Acciones
+                </td>
+            </tr>
             <tr>
                 <td>
                     <div class="menu_lateral">
@@ -87,7 +92,7 @@
 
                             <li>
                                 <div class="menu_inactivo" id="menu_salir" onMouseOver="prendido(this.id)" onmouseout="apagado(this.id)" style="cursor:pointer">
-                                    <a href="" title="Salir del Sistema">Salir del Sistema</a>
+                                    <a href="cerrar_sesion.php" title="Salir del Sistema">Salir del Sistema</a>
                                 </div>
                             </li>
 
