@@ -389,13 +389,27 @@ function initVer($arg){
 
     $r = $req->listarAnexosO();
 
-     if ($r == -1){// Error en la conexión
+    if ($r == -1){// Error en la conexión
         $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
     }else if ($r == 0){// Error en la consulta
         $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
     }else{// si realizo la consulta con éxito
         // inicializo la vista
         $objResp->assign("lblAnexos", "innerHTML", $req->getLstAnexos());
+    }
+
+    $r = $req->datosIngenieros();
+
+    if ($r == -1){
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else{
+        if ($req->getNombIng()<>null){
+            $objResp->assign("lblAnalista", "innerHTML", $req->getNombIng());
+        }else{
+            $objResp->assign("lblAnalista", "innerHTML", "Sin analista asignado");
+        }
     }
 
     return $objResp;

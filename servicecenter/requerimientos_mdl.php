@@ -46,6 +46,7 @@ class Requerimiento {
     var $correoAN;
     var $id_ing;
     var $lstAnexos;
+    var $nombreIng;
 
     function __construct($id=1, $fecha=null, $id_servicio=null, $descripcion=null, $fecha_ap=null, $fecha_as=null, $fecha_in=null, $fecha_fi=null, $id_equipo=null, $diagnostico=null, $solucion=null, $documentacion=null, $id_personal=null, $est=null, $lst=null, $mailC=null, $nomC=null, $idC=null) {
         $this->id = $id;
@@ -67,6 +68,7 @@ class Requerimiento {
         $this->nomCoordinador = $nomC;
         $this->idCoord = $idC;
         $this->lstAnexos = null;
+        $this->nombreIng = null;
     }
 
     public function getId() {
@@ -307,6 +309,14 @@ class Requerimiento {
 
     public function getLstAnexos(){
         return $this->lstAnexos;
+    }
+
+    public function setNombIng($arg){
+        $this->nombreIng = $arg;
+    }
+
+    public function getNombIng(){
+        return $this->nombreIng;
     }
 
     public function listar($pagina, $inicio){
@@ -890,6 +900,30 @@ class Requerimiento {
                 }
             }
             return 1; // Se ejecuto con exito
+        }
+    }
+
+    public function datosIngenieros(){
+        $consulta = "SELECT nombre, apellido FROM personal WHERE id='".$this->id_ing."' and estado='asignado'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Falló la conexión
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Falló la consulta
+        }else{
+            $arr = pg_fetch_row($resultado);
+            $this->nombreIng = $arr[0]." ".$arr[1];
+            pg_FreeResult($resultado);
+            $conec->cerrarConexion();
+            return 1;
         }
     }
 
