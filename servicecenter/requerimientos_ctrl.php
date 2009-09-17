@@ -764,7 +764,7 @@ function initBandejaIngeniero($pag, $ini, $id){
             $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
         }else{
             $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
-            $objResp->assign("datosPaginacifiltrarBandIngon", "innerHTML", $req->getDatosPag());
+            $objResp->assign("datosPaginacion", "innerHTML", $req->getDatosPag());
             $objResp->assign("paginacion", "innerHTML", $req->getPaginacion());
         }
     }

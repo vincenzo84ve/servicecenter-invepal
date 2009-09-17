@@ -1234,7 +1234,7 @@ class Requerimiento {
                     if ($arr[14]=="asignado"){
                         $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ing_ini.php?id=".$arr[0]."&idP=".$idC."\">Tomar</a></td></tr>";
                     }else{
-                        $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ing_ini.php?id=".$arr[0]."&idP=".$idC."\">Finalizar</a></td></tr>";
+                        $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ing_fin.php?id=".$arr[0]."&idP=".$idC."\">Finalizar</a></td></tr>";
                     }
                     
                     $i++;
