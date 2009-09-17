@@ -691,7 +691,7 @@ class Requerimiento {
         }else{
             $num = pg_numrows($resultado);
             if ($num > 0){
-                $arr = pg_fetch_row ($resultado, $i);
+                $arr = pg_fetch_row ($resultado, 0);
                 $this->descripcion = $arr[3];
                 $this->id_personal = $arr[13];
                 $this->id_ing = $arr[16];
@@ -903,8 +903,88 @@ class Requerimiento {
         }
     }
 
+    public function filtrarBandIng($pagina, $inicio, $arg, $idP){
+        $consulta = "SELECT * FROM requerimientos WHERE estado='".$arg."' and id_ingeniero='".$idP."'";
+
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1; // Error en la conexion!
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0; // Fallo la consulta
+        }else{
+            $num = pg_numrows($resultado);
+
+            //Limito la busqueda
+            $TAMANO_PAGINA = 10;
+
+
+            //calculo el total de páginas
+            $total_paginas = ceil($num / $TAMANO_PAGINA);
+
+            //pongo el número de registros total, el tamaño de página y la página que se muestra
+            $this->datosPag = "N&uacute;mero de registros encontrados: " . $num . "<br>";
+            $this->datosPag .= "Se muestran p&aacute;ginas de " . $TAMANO_PAGINA . " registros cada una<br>";
+            $this->datosPag .= "Mostrando la p&aacute;gina " . $pagina . " de " . $total_paginas . "<p>";
+
+            if ($arg=="todos"){
+                $consulta = "SELECT * FROM requerimientos WHERE id_ingeniero='".$idP."' and estado='asignado' or estado='en proceso' ORDER BY CAST(id AS INTEGER) OFFSET '".$inicio."' LIMIT '".$TAMANO_PAGINA."'";
+            }else{
+                $consulta = "SELECT * FROM requerimientos WHERE id_ingeniero='".$idP."' and estado='".$arg."' ORDER BY CAST(id AS INTEGER) OFFSET '".$inicio."' LIMIT '".$TAMANO_PAGINA."'";
+            }
+
+
+
+            $resultado = pg_query($consulta);
+
+            if (!$resultado){
+                return 0; // Fallo la consulta
+            }else{
+                $num = pg_numrows($resultado);
+
+                if ($num > 0){
+                    $i = 0;
+                    $ls = "<table>";
+                    $ls .= "<tr><td><b>ID</b></td><td><b>Fecha</b></td><td><b>Servicio</b></td><td><b>Personal</b></td><td><b>Area</b></td><td><b>Coordinaci&oacute;n</b></td><td><b>Estado</b></td></tr>";
+                    while($i < $num){
+                        $arr = pg_fetch_row ($resultado, $i);
+                        $consulta = "SELECT descripcion FROM servicios WHERE id='".$arr[2]."'";
+                        $rS = pg_query($consulta);
+                        $arrS = pg_fetch_row ($rS, 0);
+                        $consulta = "SELECT nombre, apellido, id_area FROM personal WHERE id='".$arr[13]."'";
+                        $rP = pg_query($consulta);
+                        $arrP = pg_fetch_row($rP, 0);
+                        $consulta = "SELECT nombre, id_coordinacion FROM areas WHERE id='".$arrP[2]."'";
+                        $rA = pg_query($consulta);
+                        $arrA = pg_fetch_row($rA, 0);
+                        $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arrA[1]."'";
+                        $rC = pg_query($consulta);
+                        $arrC = pg_fetch_row($rC, 0);
+                        if ($arr[14]<>"aprobado")
+                            $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ver.php?id=".$arr[0]."\">Ver</a></td></tr>";
+                        else
+                            $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_asig.php?id=".$arr[0]."\">Asignar</a>&nbsp;<a href=\"requerimientos_vis_ver.php?id=".$arr[0]."\">Ver</a></td></tr>";
+                        $i++;
+                    }
+                    $ls .= "</table>";
+                    $this->html_lst = $ls;
+                    unset($ls);
+                    pg_FreeResult($resultado);
+                    $conec->cerrarConexion();
+                }
+            }
+            return 1; // Se ejecuto con exito
+        }
+    }
+
     public function datosIngenieros(){
-        $consulta = "SELECT nombre, apellido FROM personal WHERE id='".$this->id_ing."' and estado='asignado'";
+        $consulta = "SELECT nombre, apellido FROM personal WHERE id='".$this->id_ing."'";
 
         $conec = new Conexion();
 
@@ -919,11 +999,15 @@ class Requerimiento {
         if (!$resultado){
             return 0; // Falló la consulta
         }else{
-            $arr = pg_fetch_row($resultado);
-            $this->nombreIng = $arr[0]." ".$arr[1];
-            pg_FreeResult($resultado);
-            $conec->cerrarConexion();
-            return 1;
+            if (pg_num_rows($resultado)>0){
+                $arr = pg_fetch_row($resultado);
+                $this->nombreIng = $arr[0]." ".$arr[1];
+                pg_FreeResult($resultado);
+                $conec->cerrarConexion();
+                return 1;
+            }else{
+                return 2;
+            }
         }
     }
 
@@ -1004,7 +1088,7 @@ class Requerimiento {
 
     public function listarAnexos(){
         # Lista los archivos subidos a la base de datos
-        $consulta = "select id, nombre, coalesce(archivo_oid,-1) as archivo_oid from anexo_requerimientos where id_requerimiento='".$this->id."'";
+        $consulta = "SELECT id, nombre, coalesce(archivo_oid,-1) as archivo_oid FROM anexo_requerimientos WHERE id_requerimiento='".$this->id."'";
 
         $conec = new Conexion();
 
@@ -1065,6 +1149,8 @@ class Requerimiento {
                     $i++;
                 }
                 $this->lstAnexos .= "</table>";
+            }else{
+                return 2;
             }
         }
         return 1;// Se ejecutó con éxito
@@ -1119,7 +1205,7 @@ class Requerimiento {
         $this->datosPag .= "Se muestran p&aacute;ginas de " . $TAMANO_PAGINA . " registros cada una<br>";
         $this->datosPag .= "Mostrando la p&aacute;gina " . $pagina . " de " . $total_paginas . "<p>";
 
-        $consulta = "SELECT * FROM requerimientos WHERE id_ingeniero='".$idC."' and estado='asignado' ORDER BY CAST(id AS INTEGER) OFFSET '".$inicio."' LIMIT '".$TAMANO_PAGINA."'";
+        $consulta = "SELECT * FROM requerimientos WHERE id_ingeniero='".$idC."' and (estado='asignado' or estado='en proceso') ORDER BY CAST(id AS INTEGER) OFFSET '".$inicio."' LIMIT '".$TAMANO_PAGINA."'";
 
         $resultado = pg_query($consulta);
 
@@ -1145,7 +1231,12 @@ class Requerimiento {
                     $consulta = "SELECT nombre FROM coordinacion WHERE id='".$arrA[1]."'";
                     $rC = pg_query($consulta);
                     $arrC = pg_fetch_row($rC, 0);
-                    $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ing_ini.php?id=".$arr[0]."\">Ver</a></td></tr>";
+                    if ($arr[14]=="asignado"){
+                        $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ing_ini.php?id=".$arr[0]."&idP=".$idC."\">Tomar</a></td></tr>";
+                    }else{
+                        $ls .= "<tr><td>".$arr[0]."</td><td>".$arr[1]."</td><td>".$arrS[0]."</td><td>".$arrP[0]." ".$arrP[1]."</td><td>".$arrA[0]."</td><td>".$arrC[0]."</td><td>".$arr[14]."</td><td><a href=\"requerimientos_vis_ing_ini.php?id=".$arr[0]."&idP=".$idC."\">Finalizar</a></td></tr>";
+                    }
+                    
                     $i++;
                 }
                 $ls .= "</table>";
@@ -1168,6 +1259,28 @@ class Requerimiento {
             }
         }
         return 1;// Se ejecuto satisfactoriamente
+    }
+
+    public function iniciarRequerimiento(){
+        //miro a ver el número total de campos que hay en la tabla con esa búsqueda
+        $consulta = "UPDATE requerimientos SET fecha_inicio=now(), estado='en proceso' WHERE id='".$this->id."'";
+        
+        $conec = new Conexion();
+
+        $conec->conectar();
+
+        if (!$conec->obtenerConexion()){
+            return -1;// Error en la conexion
+        }
+
+        $resultado = pg_query($consulta);
+
+        if (!$resultado){
+            return 0;// Error en la consulta
+        }else{
+            // Se ejecuto con éxito
+            return 1;
+        }
     }
 }
 ?>

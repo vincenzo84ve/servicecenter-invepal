@@ -17,6 +17,7 @@ $xajax->register(XAJAX_FUNCTION, "buscarID");
 $xajax->register(XAJAX_FUNCTION, "initVer");
 $xajax->register(XAJAX_FUNCTION, "initBandejaCoordinador");
 $xajax->register(XAJAX_FUNCTION, "filtrar");
+$xajax->register(XAJAX_FUNCTION, "filtrarBandIng");
 $xajax->register(XAJAX_FUNCTION, "aprobar");
 $xajax->register(XAJAX_FUNCTION, "anular");
 $xajax->register(XAJAX_FUNCTION, "initAsig");
@@ -26,6 +27,7 @@ $xajax->register(XAJAX_FUNCTION, "confirmElimAnexo");
 $xajax->register(XAJAX_FUNCTION, "initBandejaIngeniero");
 $xajax->register(XAJAX_FUNCTION, "initIng");
 $xajax->register(XAJAX_FUNCTION, "descargarAnexo");
+$xajax->register(XAJAX_FUNCTION, "iniciar");
 
 // Inicializar vista
 function init($pagina, $inicio){
@@ -405,7 +407,7 @@ function initVer($arg){
     }else if ($r == 0){
         $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
     }else{
-        if ($req->getNombIng()<>null){
+        if ($r==1){
             $objResp->assign("lblAnalista", "innerHTML", $req->getNombIng());
         }else{
             $objResp->assign("lblAnalista", "innerHTML", "Sin analista asignado");
@@ -450,6 +452,34 @@ function filtrar($pag, $ini, $arg){
     $req = new Requerimiento();
 
     $r = $req->filtrar($pag, $ini, $arg);
+
+    if ($r == -1){
+        $objResp->alert("Error en la conexión!\nImposible listar los requerimientos.");
+    }else if ($r == 0){
+        $objResp->alert("Error en la consulta!\nImposible listar los requerimientos.");
+    }else{
+        $lst = $req->getLista();
+        if ($lst == null){
+            $lst = "<tr><td><b>&nbsp;ID&nbsp;</b></td><td><b>&nbsp;Fecha&nbsp;</b></td><td><b>&nbsp;Servicio&nbsp;</b></td><td><b>&nbsp;Personal&nbsp;</b></td><td><b>&nbsp;Area&nbsp;</b></td><td><b>&nbsp;Coordinaci&oacute;n&nbsp;</b></td><td><b>&nbsp;Estado&nbsp;</b></td></tr></table><p>";
+            $lst .= "No existen requerimientos registrados a&uacute;n!";
+            $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
+        }else{
+            $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
+            $objResp->assign("datosPaginacion", "innerHTML", $req->getDatosPag());
+            $objResp->assign("paginacion", "innerHTML", $req->getPaginacion());
+        }
+    }
+    return $objResp;
+}
+
+function filtrarBandIng($pag, $ini, $arg, $idP){
+    $objResp = new xajaxResponse();
+
+    $objResp->alert($arg);
+
+    $req = new Requerimiento();
+
+    $r = $req->filtrarBandIng($pag, $ini, $arg, $idP);
 
     if ($r == -1){
         $objResp->alert("Error en la conexión!\nImposible listar los requerimientos.");
@@ -734,7 +764,7 @@ function initBandejaIngeniero($pag, $ini, $id){
             $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
         }else{
             $objResp->assign("listadoRequerimientos", "innerHTML", $lst);
-            $objResp->assign("datosPaginacion", "innerHTML", $req->getDatosPag());
+            $objResp->assign("datosPaginacifiltrarBandIngon", "innerHTML", $req->getDatosPag());
             $objResp->assign("paginacion", "innerHTML", $req->getPaginacion());
         }
     }
@@ -831,9 +861,20 @@ function initIng($arg){
         $objResp->assign("lblAnexos", "innerHTML", $req->getLstAnexos());
     }
 
-    $idp = $req->getIdIng();
+    $r = $req->listarAnexosO();
 
-    $objResp->assign("btnCancelar", "innerHTML", "<input type=\"button\" value=\"Cancelar\" name=\"btnCancelar\" onclick=\"xajax_cancelar('requerimientos_vis_band_ing.php?id=$idp');\" />");
+     if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
+    }else if ($r == 2){
+        $objResp->assign("lblAnexos", "innerHTML", "No existen anexos asociados a este requerimiento!");
+    }else{// si realizo la consulta con éxito
+        // inicializo la vista
+        $objResp->assign("lblAnexos", "innerHTML", $req->getLstAnexos());
+    }
+
+    $idp = $req->getIdIng();
 
     return $objResp;
 }
@@ -853,6 +894,27 @@ function descargarAnexo($arg){
         $objResp->alert("Error en la consulta!\nImposible obtener datos de requerimiento.");
     }
 
+    return $objResp;
+}
+
+function iniciar($arg, $idP){
+    $objResp = new xajaxResponse();
+
+    $req = new Requerimiento($arg);
+
+    $r = $req->iniciarRequerimiento();
+
+    if ($r == -1){// Error en la conexión
+        $objResp->alert("Error en la conexion!\nImposible iniciar requerimiento.");
+    }else if ($r == 0){// Error en la consulta
+        $objResp->alert("Error en la consulta!\nImposible iniciar requerimiento.");
+    }else{// si realizo la consulta con éxito
+        $ahora = getdate();
+        $fecha = $ahora["mday"] . "/" . $ahora["mon"] . "/" . $ahora["year"]." ".$ahora["hours"] . ":" . $ahora["minutes"] . ":" . $ahora["seconds"];
+        $objResp->alert("Requerimiento iniciado con éxito!\nFecha y Hora:".$fecha);
+        $url = "requerimientos_vis_band_ing.php?id=".$idP;
+        $objResp->redirect($url);
+    }
     return $objResp;
 }
 
