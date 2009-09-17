@@ -31,6 +31,12 @@ else {
     </head>
     <body onload="xajax_initBandejaIngeniero(<?php echo $pagina;?>,<?php echo $inicio;?>,<?php echo $id; ?>);">
         <div id="datosPaginacion"></div>
+        <div align="right">Filtrar: <select name="cmbEstado" id="cmbEstado" onchange="xajax_filtrarBandIng(<?php echo $pagina;?>,<?php echo $inicio;?>,document.getElementById('cmbEstado').value, <?php echo $id; ?>);">
+                <option value="todos">Requerimientos...</option>
+                <option value="asignado">Requerimientos Asignados</option>
+                <option value="en proceso">Requerimientos En Proceso</option>
+            </select>
+        </div>
         <div align="right">Buscar: <input type="text" name="txtIduscar" id="txtIdBuscar" /><input type="button" value="..." name="btnBuscar" id="btnBuscar" onclick="xajax_buscarID(document.getElementById('txtIdBuscar').value);"/></div>
         <div id="listadoRequerimientos">
             <table class="tabla">

@@ -4,6 +4,7 @@ class Conexion{
 
     function conectar(){// Conectar a la base de datos
         $this->conexion_bd = pg_connect("host=190.109.100.36 port=5432 dbname=scdat user=postgres password=invepal1nv3p4l") or die('No pudo conectarse: ' . pg_last_error());
+//        $this->conexion_bd = pg_connect("host=localhost port=5432 dbname=scdat user=postgres password=l4v1rg3n") or die('No pudo conectarse: ' . pg_last_error());
         return ($this->conexion_bd);
     }
 
